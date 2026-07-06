@@ -1,5 +1,6 @@
 services:
-  - type: static
+  - type: web
     name: justifaltas-uin
+    env: static
     buildCommand: ""
-    publishDir: "."
+    staticPublishPath: "."
