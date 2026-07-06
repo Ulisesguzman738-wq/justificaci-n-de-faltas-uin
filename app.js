@@ -182,7 +182,7 @@ async function syncDatabaseFromSheets() {
         const response = await fetch(GOOGLE_SCRIPT_URL);
         const resData = await response.json();
         
-        if (resData.success && resData.data) {
+        if (resData.success && resData.data && resData.data.usuarios && resData.data.usuarios.length > 0) {
             DB = resData.data;
             try {
                 localStorage.setItem(DB_KEY, JSON.stringify(DB));

@@ -102,6 +102,19 @@ function ensureSheetsAndSchemas() {
     if (!sheet) {
       sheet = ss.insertSheet(sheetName);
       sheet.appendRow(expectedHeaders);
+      
+      // Rellenar usuarios por defecto si la hoja Usuarios es recién creada
+      if (sheetName === 'Usuarios') {
+        const defaultUsers = [
+          ['sim_user_epy1yk2', 'Prueba@uin.edu.mx', 'Usuario de Pruebas UIN', 'alumno', '12345', new Date().toISOString(), 1],
+          ['u1', 'ulisega03s24a@uinteramericana.edu.mx', 'Ulise Guzman Alvaro', 'alumno', '12345', new Date().toISOString(), 1],
+          ['u2', 'syanethh03s24a@uinteramericana.edu.mx', 'Sandra Yanet Hernández Hernández', 'alumno', '12345', new Date().toISOString(), 1],
+          ['t1', 'mdavila0311@uinteramericana.edu.mx', 'Miguel Angel Davila Calzada', 'maestro', '12345', new Date().toISOString(), 1],
+          ['t5', 'direccionsc_sd25o@uinteramericana.edu.mx', 'Lic. Sandra Silva', 'coordinacion', '12345', new Date().toISOString(), 1],
+          ['t6', 'escolarsc@universidadinteramericana.edu.mx', 'Escolar Santa Catarina', 'coordinacion', '12345', new Date().toISOString(), 1]
+        ];
+        sheet.getRange(2, 1, defaultUsers.length, expectedHeaders.length).setValues(defaultUsers);
+      }
       continue;
     }
     
@@ -115,6 +128,19 @@ function ensureSheetsAndSchemas() {
     } else {
       sheet.appendRow(expectedHeaders);
       continue;
+    }
+    
+    // Rellenar usuarios por defecto si la hoja Usuarios ya existía pero está vacía
+    if (sheetName === 'Usuarios' && sheet.getLastRow() === 1) {
+      const defaultUsers = [
+        ['sim_user_epy1yk2', 'Prueba@uin.edu.mx', 'Usuario de Pruebas UIN', 'alumno', '12345', new Date().toISOString(), 1],
+        ['u1', 'ulisega03s24a@uinteramericana.edu.mx', 'Ulise Guzman Alvaro', 'alumno', '12345', new Date().toISOString(), 1],
+        ['u2', 'syanethh03s24a@uinteramericana.edu.mx', 'Sandra Yanet Hernández Hernández', 'alumno', '12345', new Date().toISOString(), 1],
+        ['t1', 'mdavila0311@uinteramericana.edu.mx', 'Miguel Angel Davila Calzada', 'maestro', '12345', new Date().toISOString(), 1],
+        ['t5', 'direccionsc_sd25o@uinteramericana.edu.mx', 'Lic. Sandra Silva', 'coordinacion', '12345', new Date().toISOString(), 1],
+        ['t6', 'escolarsc@universidadinteramericana.edu.mx', 'Escolar Santa Catarina', 'coordinacion', '12345', new Date().toISOString(), 1]
+      ];
+      sheet.getRange(2, 1, defaultUsers.length, expectedHeaders.length).setValues(defaultUsers);
     }
     
     // Buscar si faltan columnas esperadas
