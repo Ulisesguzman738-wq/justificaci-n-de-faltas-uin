@@ -753,36 +753,72 @@ function clearTeacherNotifications() {
 }
 
 // 8. DATE SELECTION AND BUSINESS VALIDATION
-function validateDateInput() {
-    const dateInput = document.getElementById('form-date');
-    const dateVal = dateInput.value;
+let selectedDates = [];
+
+window.removeSelectedDate = function(dateVal) {
+    selectedDates = selectedDates.filter(d => d !== dateVal);
+    renderSelectedDates();
+};
+
+function renderSelectedDates() {
+    const container = document.getElementById('selected-dates-container');
+    if (!container) return;
+    container.innerHTML = '';
     
+    selectedDates.sort().forEach(dateVal => {
+        const pill = document.createElement('span');
+        pill.style.background = 'var(--primary)';
+        pill.style.color = '#fff';
+        pill.style.padding = '0.4rem 0.8rem';
+        pill.style.borderRadius = '20px';
+        pill.style.fontSize = '0.8rem';
+        pill.style.fontWeight = '600';
+        pill.style.display = 'inline-flex';
+        pill.style.alignItems = 'center';
+        pill.style.gap = '6px';
+        pill.innerHTML = `
+            <span>${formatDateString(dateVal)}</span>
+            <span style="cursor:pointer; font-weight:800; font-size: 0.95rem; line-height: 1;" onclick="removeSelectedDate('${dateVal}')">×</span>
+        `;
+        container.appendChild(pill);
+    });
+    
+    validateMultipleDates();
+}
+
+function validateMultipleDates() {
     const timeLimitWarning = document.getElementById('form-time-limit-warning');
     const limitWarning = document.getElementById('form-parcial-limit-warning');
     const submitBtn = document.getElementById('form-submit-btn');
     const calculatedTetra = document.getElementById('form-calculated-tetra');
     const calculatedParcial = document.getElementById('form-calculated-parcial');
     
-    if (!dateVal) {
+    if (selectedDates.length === 0) {
         timeLimitWarning.style.display = 'none';
         limitWarning.style.display = 'none';
         calculatedTetra.value = '';
         calculatedParcial.value = '';
         submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+        submitBtn.style.cursor = 'pointer';
         return;
     }
     
-    const { tetra, parcial } = getTetraAndParcial(dateVal);
+    const firstDate = selectedDates[0];
+    const { tetra, parcial } = getTetraAndParcial(firstDate);
     calculatedTetra.value = tetra;
     calculatedParcial.value = parcial;
     
+    let anyExpired = false;
     const now = new Date();
-    const absenceDate = new Date(dateVal + 'T23:59:59');
-    const diffMs = now.getTime() - absenceDate.getTime();
-    const diffHours = diffMs / (1000 * 60 * 60);
-    
-    let isTimeExpired = diffHours > 24;
-    timeLimitWarning.style.display = isTimeExpired ? 'block' : 'none';
+    selectedDates.forEach(d => {
+        const absenceDate = new Date(d + 'T23:59:59');
+        const diffMs = now.getTime() - absenceDate.getTime();
+        const diffHours = diffMs / (1000 * 60 * 60);
+        if (diffHours > 24) {
+            anyExpired = true;
+        }
+    });
     
     const studentId = currentUser.ID_Usuario;
     const existingCount = DB.justificaciones.filter(j => 
@@ -793,9 +829,11 @@ function validateDateInput() {
     ).length;
     
     let isLimitReached = existingCount >= 2;
+    
+    timeLimitWarning.style.display = anyExpired ? 'block' : 'none';
     limitWarning.style.display = isLimitReached ? 'block' : 'none';
     
-    if (isTimeExpired || isLimitReached) {
+    if (anyExpired || isLimitReached) {
         submitBtn.disabled = true;
         submitBtn.style.opacity = '0.5';
         submitBtn.style.cursor = 'not-allowed';
@@ -806,14 +844,30 @@ function validateDateInput() {
     }
 }
 
-document.getElementById('form-date').addEventListener('change', validateDateInput);
-document.getElementById('form-date').addEventListener('input', validateDateInput);
+function handleDateChange() {
+    const dateInput = document.getElementById('form-date');
+    const dateVal = dateInput.value;
+    if (!dateVal) return;
+    
+    if (!selectedDates.includes(dateVal)) {
+        selectedDates.push(dateVal);
+        renderSelectedDates();
+    }
+    dateInput.value = '';
+}
+
+document.getElementById('form-date').addEventListener('change', handleDateChange);
 
 // 9. NEW JUSTIFICATION SUBMISSION (Alumno)
 document.getElementById('new-justification-form').addEventListener('submit', function(e) {
     e.preventDefault();
     
-    const date = document.getElementById('form-date').value;
+    if (selectedDates.length === 0) {
+        alert('Debes seleccionar al menos una fecha.');
+        return;
+    }
+    
+    const date = selectedDates.join(', ');
     const reason = document.getElementById('form-reason').value;
     const desc = document.getElementById('form-description').value;
     
@@ -833,7 +887,7 @@ document.getElementById('new-justification-form').addEventListener('submit', fun
         return;
     }
     
-    const { tetra, parcial } = getTetraAndParcial(date);
+    const { tetra, parcial } = getTetraAndParcial(selectedDates[0]);
     const existingCount = DB.justificaciones.filter(j => 
         j.ID_Alumno === currentUser.ID_Usuario && 
         j.Estado !== 'Rechazada' &&
@@ -931,6 +985,8 @@ document.getElementById('new-justification-form').addEventListener('submit', fun
         
         document.getElementById('new-justification-form').reset();
         document.getElementById('file-name-indicator').style.display = 'none';
+        selectedDates = [];
+        renderSelectedDates();
         
         alert('¡Solicitud registrada correctamente! Queda en estado "Pendiente" en Coordinación.');
         renderAlumnoDashboard();

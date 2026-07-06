@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Justifaltas - Control de Inasistencias UIN (Mac Version)</title>
-    <link rel="stylesheet" href="style.css?v=1.0.2">
+    <link rel="stylesheet" href="style.css?v=1.0.3">
 </head>
 <body>
 
@@ -189,8 +189,9 @@
                         <div class="card-title">Nueva Justificación</div>
                         <form id="new-justification-form">
                             <div class="form-group">
-                                <label for="form-date">Fecha de la Falta</label>
-                                <input type="date" id="form-date" class="form-control" required>
+                                <label for="form-date">Fecha(s) de la Falta</label>
+                                <input type="date" id="form-date" class="form-control">
+                                <div id="selected-dates-container" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;"></div>
                             </div>
                             
                             <!-- Date warnings -->
@@ -441,6 +442,6 @@
         </div>
     </div>
 
-    <script src="app.js?v=1.0.2"></script>
+    <script src="app.js?v=1.0.3"></script>
 </body>
 </html>
