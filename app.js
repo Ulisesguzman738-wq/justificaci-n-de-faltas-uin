@@ -1286,5 +1286,12 @@ document.getElementById('change-password-form').addEventListener('submit', funct
     closePasswordModal();
 });
 
+window.resetLocalCache = function() {
+    if (confirm("¿Estás seguro de que deseas restablecer la base de datos local de pruebas? Esto cerrará tu sesión, borrará la caché local del navegador y cargará los datos de fábrica (incluyendo los nuevos usuarios).")) {
+        localStorage.clear();
+        location.reload();
+    }
+};
+
 // INITIALIZATION
 window.onload = initApp;

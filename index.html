@@ -34,8 +34,9 @@
                     <div class="form-group" style="margin-top: 1.75rem;">
                         <button type="submit" class="btn btn-primary btn-block">Iniciar Sesión</button>
                     </div>
-                    <div style="text-align: center; margin-top: 1rem;">
+                    <div style="text-align: center; margin-top: 1rem; display: flex; flex-direction: column; gap: 0.65rem; align-items: center;">
                         <a href="#" style="color: hsl(220, 20%, 90%); font-size: 0.82rem; text-decoration: underline;" onclick="toggleLoginMode('change')">🔑 Cambiar Contraseña</a>
+                        <a href="#" style="color: hsla(355, 75%, 70%, 0.85); font-size: 0.75rem; text-decoration: none; font-weight: 500;" onclick="resetLocalCache()">⚙️ Restablecer base de datos local</a>
                     </div>
                 </form>
             </div>
@@ -440,6 +441,6 @@
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <script src="app.js?v=1.0.2"></script>
 </body>
 </html>
