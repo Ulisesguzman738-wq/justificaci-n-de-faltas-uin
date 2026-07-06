@@ -138,6 +138,53 @@ button, input, select, textarea {
     gap: 0.75rem;
 }
 
+.sidebar-header-row {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.sidebar-header-row .brand {
+    margin-bottom: 1.5rem;
+}
+
+.sidebar-header-row .user-profile-widget {
+    margin-bottom: 1.5rem;
+}
+
+.sidebar-nav-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 1.5rem;
+}
+
+.sync-widget {
+    margin: 0 0 1.5rem 0;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.7);
+    box-shadow: var(--shadow-sm);
+    width: 100%;
+}
+
+#sync-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #94a3b8;
+    display: inline-block;
+    flex-shrink: 0;
+    box-shadow: 0 0 4px rgba(148,163,184,0.5);
+    transition: background 0.3s;
+}
+
 .avatar {
     width: 45px;
     height: 45px;
@@ -804,29 +851,78 @@ select.form-control[multiple] {
     .sidebar {
         width: 100%;
         height: auto;
-        padding: 1.5rem;
+        padding: 1rem 1rem 0.75rem 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
     }
-    .brand {
-        margin-bottom: 1.5rem;
+    .sidebar-header-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        gap: 1rem;
     }
-    .user-profile-widget {
-        margin-bottom: 1.5rem;
+    .sidebar-header-row .brand {
+        margin-bottom: 0 !important;
     }
-    .menu-list {
+    .sidebar-header-row .user-profile-widget {
+        margin-bottom: 0 !important;
+        padding: 0.5rem 0.75rem !important;
+        gap: 0.5rem;
+    }
+    .sidebar-header-row .user-profile-widget .avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+    .sidebar-header-row .user-profile-widget .profile-name {
+        font-size: 0.85rem;
+    }
+    .sidebar-header-row .user-profile-widget .profile-role {
+        font-size: 0.7rem;
+    }
+    .sync-widget {
+        margin: 0 !important;
+        padding: 0.4rem 0.6rem !important;
+        font-size: 0.68rem !important;
+    }
+    .sidebar-nav-container {
+        display: flex;
         flex-direction: row;
         overflow-x: auto;
-        padding-bottom: 0.5rem;
+        width: 100%;
+        gap: 0.5rem;
+        padding-bottom: 0.25rem;
+        align-items: center;
+        margin-top: 0.25rem;
+        scrollbar-width: none;
     }
-    .menu-item {
+    .sidebar-nav-container::-webkit-scrollbar {
+        display: none;
+    }
+    .sidebar-nav-container .menu-list {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+    .sidebar-nav-container .menu-item {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.76rem;
+        border-radius: var(--radius-md);
         white-space: nowrap;
-        padding: 0.5rem 1rem;
     }
-    .logout-btn {
-        margin-top: 1rem;
-        padding: 0.5rem 1rem;
+    .sidebar-nav-container .logout-btn {
+        width: auto !important;
+        margin: 0 !important;
+        white-space: nowrap;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.76rem;
+        border-radius: var(--radius-md);
     }
     .main-content {
-        padding: 1.5rem;
+        padding: 1.25rem;
         height: auto;
         overflow: visible;
         width: 100%;
@@ -837,6 +933,23 @@ select.form-control[multiple] {
         gap: 1.25rem;
         margin-bottom: 2rem;
         width: 100%;
+    }
+    .metrics-grid {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        gap: 1rem;
+        padding-bottom: 0.75rem;
+        scrollbar-width: none;
+        width: 100%;
+        margin-bottom: 1.5rem;
+    }
+    .metrics-grid::-webkit-scrollbar {
+        display: none;
+    }
+    .metric-card {
+        flex: 0 0 240px;
+        margin-bottom: 0 !important;
     }
 }
 
@@ -849,9 +962,6 @@ select.form-control[multiple] {
         font-size: 1.5rem;
     }
     .card {
-        padding: 1.5rem;
-    }
-    .metrics-grid {
-        grid-template-columns: 1fr;
+        padding: 1.25rem 1rem;
     }
 }

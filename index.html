@@ -74,36 +74,40 @@
     <div id="app-container" style="display: none;">
         <!-- SIDEBAR -->
         <aside class="sidebar">
-            <div class="brand">
-                <div class="brand-icon">JF</div>
-                <span class="brand-name">Justifaltas</span>
-            </div>
+            <div class="sidebar-header-row">
+                <div class="brand">
+                    <div class="brand-icon">JF</div>
+                    <span class="brand-name">Justifaltas</span>
+                </div>
 
-            <div class="user-profile-widget">
-                <div id="user-avatar" class="avatar">U</div>
-                <div class="profile-info">
-                    <div id="user-name" class="profile-name">Cargando...</div>
-                    <span id="user-role-badge" class="profile-role">Alumno</span>
+                <div class="user-profile-widget">
+                    <div id="user-avatar" class="avatar">U</div>
+                    <div class="profile-info">
+                        <div id="user-name" class="profile-name">Cargando...</div>
+                        <span id="user-role-badge" class="profile-role">Alumno</span>
+                    </div>
                 </div>
             </div>
 
             <!-- SYNC STATUS WIDGET -->
-            <div id="sync-widget" style="margin: 0 1.25rem 1rem 1.25rem; padding: 0.5rem 0.75rem; border-radius: var(--radius-md); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 8px; font-size: 0.72rem; color: rgba(255,255,255,0.7); box-shadow: var(--shadow-sm);">
-                <span id="sync-dot" style="width: 8px; height: 8px; border-radius: 50%; background: #94a3b8; display: inline-block; flex-shrink: 0; box-shadow: 0 0 4px rgba(148,163,184,0.5);"></span>
-                <span id="sync-text" style="font-weight: 500; letter-spacing: 0.2px;">Modo Local</span>
+            <div id="sync-widget" class="sync-widget">
+                <span id="sync-dot"></span>
+                <span id="sync-text">Modo Local</span>
             </div>
 
             <!-- NAVIGATION ITEMS -->
-            <ul class="menu-list" id="sidebar-menu">
-                <!-- Dynamically populated by app.js based on role -->
-            </ul>
+            <div class="sidebar-nav-container">
+                <ul class="menu-list" id="sidebar-menu">
+                    <!-- Dynamically populated by app.js based on role -->
+                </ul>
 
-            <button class="logout-btn" id="btn-sidebar-pwd" style="margin-top: 1rem; background: rgba(255,255,255,0.05); color: #fff;" onclick="openPasswordModal()">
-                <span>🔑</span> Cambiar Clave
-            </button>
-            <button class="logout-btn" id="logout-button" style="margin-top: 0.5rem;">
-                <span>🚪</span> Cerrar Sesión
-            </button>
+                <button class="logout-btn" id="btn-sidebar-pwd" onclick="openPasswordModal()">
+                    <span>🔑</span> Cambiar Clave
+                </button>
+                <button class="logout-btn" id="logout-button">
+                    <span>🚪</span> Cerrar Sesión
+                </button>
+            </div>
         </aside>
 
         <!-- MAIN CONTENT AREA -->
