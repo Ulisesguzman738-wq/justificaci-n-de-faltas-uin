@@ -1,0 +1,11 @@
+{
+  "name": "justifaltas-app",
+  "version": "1.0.0",
+  "description": "Justifaltas - Control de Inasistencias UIN (Mac Version)",
+  "main": "app.js",
+  "scripts": {
+    "dev": "npx -y http-server . -p 8080"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

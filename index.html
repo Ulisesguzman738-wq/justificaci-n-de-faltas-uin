@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Justifaltas - Control de Inasistencias UIN (Mac Version)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen" class="login-wrapper">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="brand-icon">JF</div>
+                <h2>Justifaltas</h2>
+                <p>Portal de Justificaciones Escolares UIN</p>
+            </div>
+            
+            <!-- Standard Login View -->
+            <div id="login-form-view">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label class="login-label" for="login-email">Correo Institucional</label>
+                        <input type="email" id="login-email" class="form-control" placeholder="ejemplo@uinteramericana.edu.mx" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="login-label" for="login-password">Contraseña</label>
+                        <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
+                        <span style="font-size:0.75rem; color:hsla(220, 20%, 80%, 0.85); margin-top:4px; display:block;">
+                            Contraseña inicial de prueba: <strong>12345</strong>
+                        </span>
+                    </div>
+                    <div class="form-group" style="margin-top: 1.75rem;">
+                        <button type="submit" class="btn btn-primary btn-block">Iniciar Sesión</button>
+                    </div>
+                    <div style="text-align: center; margin-top: 1rem;">
+                        <a href="#" style="color: hsl(220, 20%, 90%); font-size: 0.82rem; text-decoration: underline;" onclick="toggleLoginMode('change')">🔑 Cambiar Contraseña</a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Change Password View on Login Card -->
+            <div id="login-change-pwd-view" style="display: none;">
+                <form id="login-change-pwd-form">
+                    <div class="form-group">
+                        <label class="login-label" for="change-email">Correo Institucional</label>
+                        <input type="email" id="change-email" class="form-control" placeholder="ejemplo@uinteramericana.edu.mx" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="login-label" for="change-pwd-current">Contraseña Actual</label>
+                        <input type="password" id="change-pwd-current" class="form-control" placeholder="Contraseña actual" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="login-label" for="change-pwd-new">Nueva Contraseña</label>
+                        <input type="password" id="change-pwd-new" class="form-control" placeholder="Mínimo 5 caracteres" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="login-label" for="change-pwd-confirm">Confirmar Nueva Contraseña</label>
+                        <input type="password" id="change-pwd-confirm" class="form-control" placeholder="Escribe de nuevo" required>
+                    </div>
+                    <div class="form-group" style="margin-top: 1.75rem;">
+                        <button type="submit" class="btn btn-success btn-block">Confirmar y Cambiar</button>
+                    </div>
+                    <div style="text-align: center; margin-top: 1rem;">
+                        <a href="#" style="color: hsl(220, 20%, 90%); font-size: 0.82rem; text-decoration: underline;" onclick="toggleLoginMode('login')">⬅️ Volver al Inicio de Sesión</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <div id="app-container" style="display: none;">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-icon">JF</div>
+                <span class="brand-name">Justifaltas</span>
+            </div>
+
+            <div class="user-profile-widget">
+                <div id="user-avatar" class="avatar">U</div>
+                <div class="profile-info">
+                    <div id="user-name" class="profile-name">Cargando...</div>
+                    <span id="user-role-badge" class="profile-role">Alumno</span>
+                </div>
+            </div>
+
+            <!-- SYNC STATUS WIDGET -->
+            <div id="sync-widget" style="margin: 0 1.25rem 1rem 1.25rem; padding: 0.5rem 0.75rem; border-radius: var(--radius-md); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 8px; font-size: 0.72rem; color: rgba(255,255,255,0.7); box-shadow: var(--shadow-sm);">
+                <span id="sync-dot" style="width: 8px; height: 8px; border-radius: 50%; background: #94a3b8; display: inline-block; flex-shrink: 0; box-shadow: 0 0 4px rgba(148,163,184,0.5);"></span>
+                <span id="sync-text" style="font-weight: 500; letter-spacing: 0.2px;">Modo Local</span>
+            </div>
+
+            <!-- NAVIGATION ITEMS -->
+            <ul class="menu-list" id="sidebar-menu">
+                <!-- Dynamically populated by app.js based on role -->
+            </ul>
+
+            <button class="logout-btn" id="btn-sidebar-pwd" style="margin-top: 1rem; background: rgba(255,255,255,0.05); color: #fff;" onclick="openPasswordModal()">
+                <span>🔑</span> Cambiar Clave
+            </button>
+            <button class="logout-btn" id="logout-button" style="margin-top: 0.5rem;">
+                <span>🚪</span> Cerrar Sesión
+            </button>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="main-content">
+            <!-- Header bar with Tetra Filter -->
+            <header class="header">
+                <div class="welcome-section">
+                    <h1 id="welcome-title">¡Hola de nuevo!</h1>
+                    <p id="welcome-subtitle">Control de justificaciones académicas.</p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1.25rem;">
+                    <div style="display: flex; align-items: center; background: #fff; border: 1.5px solid var(--border-color); padding: 0.4rem 1rem; border-radius: 30px; box-shadow: var(--shadow-sm);">
+                        <label for="global-tetra-filter" style="font-weight: 600; font-size: 0.85rem; color: var(--text-muted);">Periodo (Tetra):</label>
+                        <select id="global-tetra-filter" class="form-control" style="border: none; padding: 0 0.5rem; background: transparent; font-weight: 600; font-size: 0.85rem; cursor: pointer; outline: none;">
+                            <option value="Enero – Abril">Enero – Abril</option>
+                            <option value="Mayo – Agosto">Mayo – Agosto</option>
+                            <option value="Septiembre – Diciembre">Septiembre – Diciembre</option>
+                        </select>
+                    </div>
+                    <div class="role-badge-header" id="role-display-badge">Alumno</div>
+                </div>
+            </header>
+
+            <!-- ================= ALUMNO VIEW ================= -->
+            <div id="panel-alumno" class="view-panel">
+                <!-- Metrics -->
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon blue">📝</div>
+                        <div class="metric-info">
+                            <span class="metric-val" id="metric-student-total">0</span>
+                            <span class="metric-lbl">Solicitudes</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon orange">⏳</div>
+                        <div class="metric-info">
+                            <span class="metric-val" id="metric-student-pending">0</span>
+                            <span class="metric-lbl">Pendientes</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon green">✅</div>
+                        <div class="metric-info">
+                            <span class="metric-val" id="metric-student-justified">0</span>
+                            <span class="metric-lbl">Confirmadas (Enteradas)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form & Table Layout -->
+                <div class="dashboard-layout">
+                    <!-- Historial (Tabla) -->
+                    <div class="card">
+                        <div class="card-title" id="student-history-title">Mis Solicitudes (Periodo Activo)</div>
+                        <div class="table-responsive">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Fecha Falta</th>
+                                        <th>Parcial</th>
+                                        <th>Motivo</th>
+                                        <th>Docentes Asignados</th>
+                                        <th>Evidencia</th>
+                                        <th>Estado / Seguimiento</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="student-requests-table">
+                                    <!-- Dynamic rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Formulario de Registro -->
+                    <div class="card">
+                        <div class="card-title">Nueva Justificación</div>
+                        <form id="new-justification-form">
+                            <div class="form-group">
+                                <label for="form-date">Fecha de la Falta</label>
+                                <input type="date" id="form-date" class="form-control" required>
+                            </div>
+                            
+                            <!-- Date warnings -->
+                            <div id="form-time-limit-warning" style="display:none; background-color: var(--danger-light); color: var(--danger); padding: 0.75rem; border-radius: var(--radius-md); font-weight: 600; font-size: 0.8rem; margin-bottom: 1rem; border-left: 4px solid var(--danger);">
+                                ⚠️ El tiempo límite de 24 horas para justificar esta falta ha expirado. El envío está bloqueado.
+                            </div>
+
+                            <div class="form-group">
+                                <label>Periodo (Tetra) de la Falta</label>
+                                <input type="text" id="form-calculated-tetra" class="form-control" readonly style="background-color: var(--bg-main); font-weight: 600; cursor: not-allowed;">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Parcial asignado (Calculado por fecha)</label>
+                                <input type="text" id="form-calculated-parcial" class="form-control" readonly style="background-color: var(--bg-main); font-weight: 600; cursor: not-allowed;">
+                                <div id="form-parcial-limit-warning" style="display:none; background-color: var(--danger-light); color: var(--danger); padding: 0.75rem; border-radius: var(--radius-md); font-weight: 600; font-size: 0.8rem; margin-top: 8px; border-left: 4px solid var(--danger);">
+                                    ⚠️ Has alcanzado el límite permitido de 2 evidencias para este parcial en el periodo seleccionado.
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="form-reason">Motivo</label>
+                                <select id="form-reason" class="form-control" required>
+                                    <option value="">Selecciona un motivo</option>
+                                    <option value="Consulta médica">Consulta médica</option>
+                                    <option value="Familiar de fuerza mayor">Familiar de fuerza mayor</option>
+                                    <option value="Trámite oficial administrativo">Trámite oficial administrativo</option>
+                                    <option value="Representación escolar">Representación escolar / Académico</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="form-teachers">Maestros que recibirán la falta</label>
+                                <select id="form-teachers" class="form-control" multiple required>
+                                    <!-- Dynamic teachers list -->
+                                </select>
+                                <span style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; display: block;">
+                                    Mantén presionado Ctrl (o Cmd) para seleccionar múltiples maestros.
+                                </span>
+                            </div>
+                            <div class="form-group">
+                                <label for="form-description">Descripción del Motivo</label>
+                                <textarea id="form-description" class="form-control" placeholder="Escribe detalles breves acerca de tu inasistencia..." required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Evidencia Física (Obligatorio)</label>
+                                <div class="file-upload-wrapper" id="file-dropzone">
+                                    <span class="file-upload-icon">📁</span>
+                                    <span class="file-upload-text">Selecciona o arrastra tu evidencia</span>
+                                    <span class="file-upload-hint">Formatos aceptados: PNG, JPG, PDF (Máx. 5MB)</span>
+                                    <input type="file" id="form-file" class="file-upload-input" accept="image/png, image/jpeg, application/pdf" required>
+                                    <div class="file-selected-indicator" id="file-name-indicator">Archivo seleccionado</div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block" id="form-submit-btn">Enviar Solicitud</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= COORDINACIÓN VIEW ================= -->
+            <div id="panel-coordinacion" class="view-panel">
+                <!-- Metrics -->
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon orange">⏳</div>
+                        <div class="metric-info">
+                            <span class="metric-val" id="metric-coord-pending">0</span>
+                            <span class="metric-lbl">Pendientes de Revisión</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon blue">✅</div>
+                        <div class="metric-info">
+                            <span class="metric-val" id="metric-coord-approved">0</span>
+                            <span class="metric-lbl">Aprobadas</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon red">❌</div>
+                        <div class="metric-info">
+                            <span class="metric-val" id="metric-coord-rejected">0</span>
+                            <span class="metric-lbl">Rechazadas</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Split screen viewer -->
+                <div class="split-viewer">
+                    <!-- Left: Pending List & Details -->
+                    <div class="details-panel">
+                        <div class="card" style="flex: 1;">
+                            <div class="card-title">Bandeja de Entrada Coordinación</div>
+                            <div class="table-responsive" style="max-height: 250px; overflow-y: auto; margin-bottom: 1.5rem;">
+                                <table class="custom-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Alumno</th>
+                                            <th>Fecha Falta</th>
+                                            <th>Motivo</th>
+                                            <th>Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="coord-pending-table">
+                                        <!-- Dynamic pending requests -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Selected Request Details Form -->
+                            <div id="coord-review-details" style="display: none; border-top: 2px solid var(--border-color); padding-top: 1.5rem;">
+                                <h4 class="card-title" style="margin-bottom: 1rem;">Detalles del Justificante</h4>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; font-size: 0.9rem;">
+                                    <p><strong>Alumno:</strong> <span id="review-student">Carlos Ruiz</span></p>
+                                    <p><strong>ID Alumno:</strong> <span id="review-matricula">u1</span></p>
+                                    <p><strong>Correo:</strong> <span id="review-correo">correo@uin.edu.mx</span></p>
+                                    <p><strong>Fecha Falta:</strong> <span id="review-date">2026-06-20</span></p>
+                                    <p><strong>Motivo:</strong> <span id="review-reason">Consulta médica</span></p>
+                                </div>
+                                <div style="margin-bottom: 1.25rem;">
+                                    <p style="font-size: 0.9rem;"><strong>Descripción del alumno:</strong></p>
+                                    <p style="font-size: 0.88rem; background: var(--bg-main); padding: 0.75rem; border-radius: var(--radius-sm); margin-top: 4px;" id="review-description">
+                                        Detalles.
+                                    </p>
+                                </div>
+
+                                <!-- Parcial Selection (Coordinación only) -->
+                                <div class="form-group">
+                                    <label for="review-parcial-select">Asignar Parcial (Obligatorio)</label>
+                                    <select id="review-parcial-select" class="form-control" required>
+                                        <option value="Parcial 1">Parcial 1</option>
+                                        <option value="Parcial 2">Parcial 2</option>
+                                        <option value="Parcial 3">Parcial 3</option>
+                                    </select>
+                                </div>
+
+                                <!-- Action actions -->
+                                <div class="form-group">
+                                    <label for="coord-comments">Observaciones de la Resolución</label>
+                                    <textarea id="coord-comments" class="form-control" placeholder="Escribe el veredicto o comentario de revisión... (Obligatorio al rechazar)"></textarea>
+                                </div>
+                                <div style="display: flex; gap: 1rem;">
+                                    <button class="btn btn-success" style="flex: 1;" id="btn-approve-request">Aprobar Solicitud</button>
+                                    <button class="btn btn-danger" style="flex: 1;" id="btn-reject-request">Rechazar Solicitud</button>
+                                </div>
+                            </div>
+                            <div id="coord-empty-details" class="empty-state">
+                                <div class="empty-state-icon">📋</div>
+                                <p>Selecciona una solicitud de la bandeja para revisarla.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Evidence viewer -->
+                    <div class="card" style="display: flex; flex-direction: column;">
+                        <div class="card-title">Evidencia Adjunta (Archivos Adjuntos)</div>
+                        <div class="evidence-viewer-card" id="evidence-viewer-container">
+                            <div class="evidence-placeholder" id="evidence-view-placeholder">
+                                <p>Selecciona una solicitud para visualizar su documento soporte.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= MAESTRO VIEW ================= -->
+            <div id="panel-maestro" class="view-panel">
+                <!-- Notifications -->
+                <div id="teacher-notifications-area">
+                    <!-- Dynamic banners for new approved justifications -->
+                </div>
+
+                <!-- Metrics -->
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon blue">📥</div>
+                        <div class="metric-info">
+                            <span class="metric-val" id="metric-teacher-approved">0</span>
+                            <span class="metric-lbl">Total Justificantes</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon orange">⏳</div>
+                        <div class="metric-info">
+                            <span class="metric-val" id="metric-teacher-pending">0</span>
+                            <span class="metric-lbl">Pendientes Confirmar</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon green">✅</div>
+                        <div class="metric-info">
+                            <span class="metric-val" id="metric-teacher-justified">0</span>
+                            <span class="metric-lbl">Enteradas (Confirmadas)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Layout -->
+                <div class="dashboard-layout single-column">
+                    <div class="card">
+                        <div class="card-title">Bandeja de Justificantes Escolares Recibidos</div>
+                        <div class="table-responsive">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>Alumno</th>
+                                        <th>Correo Alumno</th>
+                                        <th>Fecha Falta</th>
+                                        <th>Parcial</th>
+                                        <th>Observación Coordinador</th>
+                                        <th>Evidencia</th>
+                                        <th>Estatus</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="teacher-requests-table">
+                                    <!-- Dynamic assignments -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- CHANGE PASSWORD MODAL (INSIDE APP) -->
+    <div id="password-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); align-items: center; justify-content: center; z-index: 100001;">
+        <div class="card" style="width: 400px; margin-bottom: 0;">
+            <div class="card-title">Cambiar Contraseña</div>
+            <form id="change-password-form">
+                <div class="form-group">
+                    <label for="pwd-current">Contraseña Actual</label>
+                    <input type="password" id="pwd-current" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="pwd-new">Nueva Contraseña</label>
+                    <input type="password" id="pwd-new" class="form-control" placeholder="Mínimo 5 caracteres" required>
+                </div>
+                <div class="form-group">
+                    <label for="pwd-confirm">Confirmar Nueva Contraseña</label>
+                    <input type="password" id="pwd-confirm" class="form-control" placeholder="Repite la nueva contraseña" required>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Guardar</button>
+                    <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="closePasswordModal()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
