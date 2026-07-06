@@ -146,6 +146,20 @@ function loadDatabase() {
             DB = JSON.parse(JSON.stringify(officialDB)); // Deep clone
         } else {
             DB = JSON.parse(data);
+            // Sincronizar usuarios nuevos del código con la base de datos de caché local (localStorage)
+            let updated = false;
+            officialDB.usuarios.forEach(offU => {
+                const exists = DB.usuarios.some(u => u.Correo_Electronico.toLowerCase() === offU.Correo_Electronico.toLowerCase());
+                if (!exists) {
+                    DB.usuarios.push(offU);
+                    updated = true;
+                }
+            });
+            if (updated) {
+                try {
+                    localStorage.setItem(DB_KEY, JSON.stringify(DB));
+                } catch(e) {}
+            }
         }
     } catch (e) {
         // Fallback for Safari/Chrome on file:// where localStorage might throw a SecurityError
