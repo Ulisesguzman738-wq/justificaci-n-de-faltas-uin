@@ -588,7 +588,14 @@ function renderCoordinacionDashboard() {
             selectRequestForReview(req.ID_Justificante);
         } else {
             activeRequestForReview = null;
+            document.getElementById('coord-review-details').style.display = 'none';
+            document.getElementById('coord-empty-details').style.display = 'block';
+            resetEvidenceViewer();
         }
+    } else {
+        document.getElementById('coord-review-details').style.display = 'none';
+        document.getElementById('coord-empty-details').style.display = 'block';
+        resetEvidenceViewer();
     }
 }
 
