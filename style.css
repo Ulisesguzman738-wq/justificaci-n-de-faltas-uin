@@ -789,11 +789,17 @@ select.form-control[multiple] {
 @media (max-width: 768px) {
     body {
         flex-direction: column;
+        height: auto;
+        width: 100%;
+        overflow: visible;
+        overflow-x: hidden;
     }
     #app-container {
         flex-direction: column;
         height: auto;
-        overflow-y: auto;
+        min-height: 100vh;
+        width: 100%;
+        overflow: visible;
     }
     .sidebar {
         width: 100%;
@@ -822,13 +828,15 @@ select.form-control[multiple] {
     .main-content {
         padding: 1.5rem;
         height: auto;
-        overflow-y: visible;
+        overflow: visible;
+        width: 100%;
     }
     .header {
         flex-direction: column;
         align-items: flex-start;
         gap: 1.25rem;
         margin-bottom: 2rem;
+        width: 100%;
     }
 }
 
