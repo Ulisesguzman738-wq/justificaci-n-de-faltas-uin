@@ -849,7 +849,9 @@ select.form-control[multiple] {
         overflow: visible;
     }
     .sidebar {
-        width: 100%;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
         height: auto;
         padding: 1rem 1rem 0.75rem 1rem;
         display: flex;
