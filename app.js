@@ -606,8 +606,10 @@ function selectRequestForReview(reqId) {
     activeRequestForReview = req;
     const studentUser = DB.usuarios.find(u => u.ID_Usuario === req.ID_Alumno);
     
+    const detailsPanel = document.getElementById('coord-review-details');
+    detailsPanel.setAttribute('data-request-id', reqId);
     document.getElementById('coord-empty-details').style.display = 'none';
-    document.getElementById('coord-review-details').style.display = 'block';
+    detailsPanel.style.display = 'block';
     
     document.getElementById('review-student').innerText = studentUser ? studentUser.Nombre_Completo : 'N/A';
     document.getElementById('review-matricula').innerText = studentUser ? studentUser.ID_Usuario : 'N/A';
@@ -1048,34 +1050,40 @@ function updateFileNameIndicator() {
 }
 
 document.getElementById('btn-approve-request').addEventListener('click', function() {
-    if (!activeRequestForReview) return;
+    const detailsPanel = document.getElementById('coord-review-details');
+    const reqId = detailsPanel.getAttribute('data-request-id');
+    const req = DB.justificaciones.find(j => j.ID_Justificante === reqId);
+    if (!req) {
+        alert("Error: No hay ninguna solicitud seleccionada.");
+        return;
+    }
     
     const comments = document.getElementById('coord-comments').value.trim();
     const assignedParcial = document.getElementById('review-parcial-select').value;
     
-    activeRequestForReview.Estado = 'Aprobada';
-    activeRequestForReview.Parcial = assignedParcial;
-    activeRequestForReview.ID_Coordinador_Revisor = currentUser.ID_Usuario;
-    activeRequestForReview.Fecha_Revision = new Date().toISOString();
+    req.Estado = 'Aprobada';
+    req.Parcial = assignedParcial;
+    req.ID_Coordinador_Revisor = currentUser.ID_Usuario;
+    req.Fecha_Revision = new Date().toISOString();
     
     DB.observaciones.push({
         ID_Observacion: 'obs_' + Math.random().toString(36).substr(2, 9),
-        ID_Justificante: activeRequestForReview.ID_Justificante,
+        ID_Justificante: req.ID_Justificante,
         ID_Usuario: currentUser.ID_Usuario,
         Comentario: comments || `Aprobada por Coordinación Escolar. Asignado a: ${assignedParcial}.`,
         Tipo: 'Revision',
         Fecha: new Date().toISOString()
     });
     
-    const linkedTeachers = DB.justificante_maestro.filter(jm => jm.ID_Justificante === activeRequestForReview.ID_Justificante);
+    const linkedTeachers = DB.justificante_maestro.filter(jm => jm.ID_Justificante === req.ID_Justificante);
     linkedTeachers.forEach(t => {
         t.Fecha_Notificacion = new Date().toISOString();
         
         DB.notificaciones.push({
             ID_Notificacion: 'not_' + Math.random().toString(36).substr(2, 9),
             ID_Usuario: t.ID_Maestro,
-            ID_Justificante: activeRequestForReview.ID_Justificante,
-            Mensaje: `Se ha aprobado la justificación del alumno ${DB.usuarios.find(u => u.ID_Usuario === activeRequestForReview.ID_Alumno)?.Nombre_Completo}. Por favor, confirma la recepción.`,
+            ID_Justificante: req.ID_Justificante,
+            Mensaje: `Se ha aprobado la justificación del alumno ${DB.usuarios.find(u => u.ID_Usuario === req.ID_Alumno)?.Nombre_Completo}. Por favor, confirma la recepción.`,
             Leida: 0,
             Fecha: new Date().toISOString()
         });
@@ -1085,11 +1093,18 @@ document.getElementById('btn-approve-request').addEventListener('click', functio
     alert('Justificación aprobada por Coordinación. Se ha notificado a los maestros para confirmar la recepción.');
     
     activeRequestForReview = null;
+    detailsPanel.removeAttribute('data-request-id');
     renderCoordinacionDashboard();
 });
 
 document.getElementById('btn-reject-request').addEventListener('click', function() {
-    if (!activeRequestForReview) return;
+    const detailsPanel = document.getElementById('coord-review-details');
+    const reqId = detailsPanel.getAttribute('data-request-id');
+    const req = DB.justificaciones.find(j => j.ID_Justificante === reqId);
+    if (!req) {
+        alert("Error: No hay ninguna solicitud seleccionada.");
+        return;
+    }
     
     const comments = document.getElementById('coord-comments').value.trim();
     if (!comments) {
@@ -1097,13 +1112,13 @@ document.getElementById('btn-reject-request').addEventListener('click', function
         return;
     }
     
-    activeRequestForReview.Estado = 'Rechazada';
-    activeRequestForReview.ID_Coordinador_Revisor = currentUser.ID_Usuario;
-    activeRequestForReview.Fecha_Revision = new Date().toISOString();
+    req.Estado = 'Rechazada';
+    req.ID_Coordinador_Revisor = currentUser.ID_Usuario;
+    req.Fecha_Revision = new Date().toISOString();
     
     DB.observaciones.push({
         ID_Observacion: 'obs_' + Math.random().toString(36).substr(2, 9),
-        ID_Justificante: activeRequestForReview.ID_Justificante,
+        ID_Justificante: req.ID_Justificante,
         ID_Usuario: currentUser.ID_Usuario,
         Comentario: comments,
         Tipo: 'Revision',
@@ -1114,6 +1129,7 @@ document.getElementById('btn-reject-request').addEventListener('click', function
     alert('Justificación rechazada.');
     
     activeRequestForReview = null;
+    detailsPanel.removeAttribute('data-request-id');
     renderCoordinacionDashboard();
 });
 

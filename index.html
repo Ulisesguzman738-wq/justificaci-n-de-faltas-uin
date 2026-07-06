@@ -4,17 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Justifaltas - Control de Inasistencias UIN (Mac Version)</title>
-    <link rel="stylesheet" href="style.css?v=1.0.5">
+    <link rel="stylesheet" href="style.css?v=1.0.6">
 </head>
 <body>
 
     <!-- LOGIN SCREEN -->
     <div id="login-screen" class="login-wrapper">
         <div class="login-card">
-            <div class="login-header">
-                <div class="brand-icon">JF</div>
-                <h2>Justifaltas</h2>
-                <p>Portal de Justificaciones Escolares UIN</p>
+            <div class="login-header" style="display: flex; flex-direction: column; align-items: center; margin-bottom: 2rem;">
+                <img src="logo-uin.png" alt="Universidad Interamericana del Norte" style="max-width: 280px; width: 100%; height: auto; object-fit: contain; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.35)); margin-bottom: 0.5rem;">
+                <p style="font-size: 0.88rem; color: var(--text-muted); font-weight: 500;">Portal de Justificaciones Escolares UIN</p>
             </div>
             
             <!-- Standard Login View -->
@@ -76,9 +75,8 @@
         <!-- SIDEBAR -->
         <aside class="sidebar">
             <div class="sidebar-header-row">
-                <div class="brand">
-                    <div class="brand-icon">JF</div>
-                    <span class="brand-name">Justifaltas</span>
+                <div class="brand" style="margin-bottom: 2rem; display: flex; justify-content: center; width: 100%;">
+                    <img src="logo-uin.png" alt="Universidad Interamericana del Norte" style="max-width: 100%; max-height: 45px; object-fit: contain; filter: brightness(1.15) contrast(1.05) drop-shadow(0 2px 6px rgba(0,0,0,0.25));">
                 </div>
 
                 <div class="user-profile-widget">
@@ -442,6 +440,6 @@
         </div>
     </div>
 
-    <script src="app.js?v=1.0.5"></script>
+    <script src="app.js?v=1.0.6"></script>
 </body>
 </html>
