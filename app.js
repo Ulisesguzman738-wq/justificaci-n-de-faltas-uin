@@ -3,7 +3,7 @@
 // Google Sheets Integration Configuration
 // Coloca aquí la URL de la Web App obtenida al implementar tu Google Apps Script.
 // Si está vacía, el sistema operará en "Modo Local" (usando localStorage).
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbye9EBh61Lg7qd4Psw61uQ7Mw6ZYXQ7vO_SE9XquLGq5WODy7RlGyV1eBsKg_-R6rML/exec";
+const GOOGLE_SCRIPT_URL = "";
 
 // Helper para actualizar el indicador visual de sincronización en la barra lateral
 function showSyncStatus(status, text) {
@@ -1079,10 +1079,10 @@ function viewEvidenceModal(justId) {
     const modalContent = document.createElement('div');
     modalContent.style.background = 'var(--bg-card)';
     modalContent.style.borderRadius = 'var(--radius-lg)';
-    modalContent.style.padding = '2rem';
-    modalContent.style.width = '80%';
+    modalContent.style.padding = window.innerWidth <= 480 ? '1.25rem' : '2rem';
+    modalContent.style.width = window.innerWidth <= 480 ? '92%' : '80%';
     modalContent.style.maxWidth = '750px';
-    modalContent.style.height = '85%';
+    modalContent.style.height = window.innerWidth <= 480 ? '80%' : '85%';
     modalContent.style.display = 'flex';
     modalContent.style.flexDirection = 'column';
     modalContent.onclick = (e) => e.stopPropagation();

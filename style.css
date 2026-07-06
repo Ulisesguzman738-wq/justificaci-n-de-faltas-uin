@@ -792,6 +792,8 @@ select.form-control[multiple] {
     }
     #app-container {
         flex-direction: column;
+        height: auto;
+        overflow-y: auto;
     }
     .sidebar {
         width: 100%;
@@ -819,5 +821,29 @@ select.form-control[multiple] {
     }
     .main-content {
         padding: 1.5rem;
+        height: auto;
+        overflow-y: visible;
+    }
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.25rem;
+        margin-bottom: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-card {
+        width: 92%;
+        padding: 2.25rem 1.5rem;
+    }
+    .login-header h2 {
+        font-size: 1.5rem;
+    }
+    .card {
+        padding: 1.5rem;
+    }
+    .metrics-grid {
+        grid-template-columns: 1fr;
     }
 }
