@@ -3,7 +3,7 @@
 // Google Sheets Integration Configuration
 // Coloca aquí la URL de la Web App obtenida al implementar tu Google Apps Script.
 // Si está vacía, el sistema operará en "Modo Local" (usando localStorage).
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbye9EBh61Lg7qd4Psw61uQ7Mw6ZYXQ7vO_SE9XquLGq5WODy7RlGyV1eBsKg_-R6rML/exec";
+const GOOGLE_SCRIPT_URL = "";
 
 // Helper para actualizar el indicador visual de sincronización en la barra lateral
 function showSyncStatus(status, text) {
@@ -247,6 +247,21 @@ function saveDatabase() {
 }
 
 // 2. STATE MANAGEMENT & AUTH
+function getNormalizedRole(role) {
+    if (!role) return '';
+    const r = role.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+    if (r.includes('alumno') || r.includes('estudiante')) {
+        return 'alumno';
+    }
+    if (r.includes('maestro') || r.includes('docente') || r.includes('profesor')) {
+        return 'maestro';
+    }
+    if (r.includes('coordinac') || r.includes('direc') || r.includes('admin')) {
+        return 'coordinacion';
+    }
+    return r;
+}
+
 let currentUser = null;
 let currentRole = null;
 let activeRequestForReview = null;
@@ -297,7 +312,7 @@ function initApp() {
 
 function login(user) {
     currentUser = user;
-    currentRole = user.Rol;
+    currentRole = getNormalizedRole(user.Rol);
     
     try {
         localStorage.setItem('justifaltas_session_secured', user.Correo_Electronico);
@@ -444,7 +459,7 @@ function renderAlumnoDashboard() {
     // Populate Teachers
     const formTeachers = document.getElementById('form-teachers');
     formTeachers.innerHTML = '';
-    DB.usuarios.filter(u => u.Rol === 'maestro').forEach(m => {
+    DB.usuarios.filter(u => getNormalizedRole(u.Rol) === 'maestro').forEach(m => {
         const option = document.createElement('option');
         option.value = m.ID_Usuario;
         option.innerText = m.Nombre_Completo;
