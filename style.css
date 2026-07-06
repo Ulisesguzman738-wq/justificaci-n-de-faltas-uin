@@ -859,21 +859,25 @@ select.form-control[multiple] {
         width: 100%;
         overflow: visible;
     }
+    
+    /* 1. NAVEGACIÓN Y ENCABEZADO */
     .sidebar {
         width: 100% !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
         height: auto;
-        padding: 1rem 1rem 0.75rem 1rem;
+        padding: 1.5rem 1.25rem;
         display: flex;
         flex-direction: column;
-        gap: 0.75rem;
+        gap: 1rem;
+        text-align: center;
+        align-items: center;
     }
     .sidebar-header-row {
         display: flex;
-        flex-direction: row;
-        justify-content: space-between;
+        flex-direction: column; /* Apilado vertical del logo y perfil */
         align-items: center;
+        text-align: center;
         width: 100%;
         gap: 1rem;
     }
@@ -882,75 +886,77 @@ select.form-control[multiple] {
     }
     .sidebar-header-row .user-profile-widget {
         margin-bottom: 0 !important;
-        padding: 0.5rem 0.75rem !important;
-        gap: 0.5rem;
+        padding: 0.75rem 1.25rem !important;
+        width: 100%;
+        justify-content: center;
+        gap: 0.75rem;
     }
     .sidebar-header-row .user-profile-widget .avatar {
-        width: 32px;
-        height: 32px;
-        font-size: 0.9rem;
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
     }
     .sidebar-header-row .user-profile-widget .profile-name {
-        font-size: 0.85rem;
+        font-size: 0.95rem;
     }
     .sidebar-header-row .user-profile-widget .profile-role {
-        font-size: 0.7rem;
+        font-size: 0.75rem;
     }
     .sync-widget {
         margin: 0 !important;
-        padding: 0.4rem 0.6rem !important;
-        font-size: 0.68rem !important;
+        padding: 0.5rem 1rem !important;
+        font-size: 0.75rem !important;
+        justify-content: center;
+        width: 100%;
     }
     .sidebar-nav-container {
         display: flex;
-        flex-direction: row;
-        overflow-x: auto;
+        flex-direction: column; /* Apilado vertical de botones de acción */
         width: 100%;
-        gap: 0.25rem;
-        padding: 0.35rem;
-        align-items: center;
-        margin-top: 0.25rem;
-        background: rgba(0, 0, 0, 0.25);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        border-radius: 30px;
-        scrollbar-width: none;
-    }
-    .sidebar-nav-container::-webkit-scrollbar {
-        display: none;
+        gap: 0.5rem;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        padding: 0;
+        margin-top: 0.5rem;
     }
     .sidebar-nav-container .menu-list {
         display: flex;
-        flex-direction: row;
-        gap: 0.25rem;
+        flex-direction: column;
+        width: 100%;
+        gap: 0.5rem;
     }
-    .sidebar-nav-container .menu-item {
-        padding: 0.5rem 1rem;
-        font-size: 0.76rem;
-        border-radius: 20px;
+    .sidebar-nav-container .menu-item,
+    .sidebar-nav-container .logout-btn {
+        width: 100% !important;
+        padding: 0.85rem 1.25rem;
+        font-size: 0.88rem;
+        border-radius: var(--radius-md);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text-white);
+        justify-content: center;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-sizing: border-box;
+        margin: 0 !important;
         white-space: nowrap;
-        background: transparent;
-        color: var(--text-muted);
-        gap: 6px;
     }
     .sidebar-nav-container .menu-item.active {
         background: var(--primary) !important;
         color: var(--text-white) !important;
-        box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+        border-color: var(--primary);
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
     }
     .sidebar-nav-container .logout-btn {
-        width: auto !important;
-        margin: 0 !important;
-        white-space: nowrap;
-        padding: 0.5rem 1rem;
-        font-size: 0.76rem;
-        border-radius: 20px;
-        background: transparent;
-        border: none;
-        color: var(--text-muted);
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
+        background: rgba(255, 255, 255, 0.02);
     }
+    .sidebar-nav-container .logout-btn:hover {
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    /* 2. CONTENIDO PRINCIPAL Y BIENVENIDA */
     .main-content {
         padding: 1.25rem;
         height: auto;
@@ -964,22 +970,87 @@ select.form-control[multiple] {
         margin-bottom: 2rem;
         width: 100%;
     }
+    .welcome-section h1 {
+        font-size: 1.6rem;
+        line-height: 1.2;
+    }
+    
+    /* 3. RESUMEN DE JUSTIFICANTES (DESPLAZAMIENTO SWIPE MEJORADO) */
     .metrics-grid {
         display: flex;
         flex-direction: row;
         overflow-x: auto;
         gap: 1rem;
-        padding-bottom: 0.75rem;
+        padding: 0.5rem 1.25rem 0.75rem 1.25rem;
+        margin: 0 -1.25rem 1.5rem -1.25rem;
         scrollbar-width: none;
-        width: 100%;
-        margin-bottom: 1.5rem;
+        width: calc(100% + 2.5rem);
     }
     .metrics-grid::-webkit-scrollbar {
         display: none;
     }
     .metric-card {
-        flex: 0 0 240px;
+        flex: 0 0 220px;
         margin-bottom: 0 !important;
+    }
+    
+    /* 4. SECCIÓN MIS SOLICITUDES: TRANSFORMACIÓN DE TABLAS EN TARJETAS */
+    .custom-table, 
+    .custom-table thead, 
+    .custom-table tbody, 
+    .custom-table th, 
+    .custom-table td, 
+    .custom-table tr { 
+        display: block !important; 
+        width: 100% !important;
+    }
+    
+    .custom-table thead { 
+        display: none !important;
+    }
+    
+    .custom-table tr { 
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
+        padding: 1.25rem 1rem;
+        margin-bottom: 1rem;
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .custom-table td { 
+        border: none !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important; 
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 0.75rem 0 !important;
+        font-size: 0.88rem !important;
+        text-align: right !important;
+    }
+    
+    .custom-table td:last-child {
+        border-bottom: none !important;
+    }
+    
+    .custom-table td::before { 
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--text-muted);
+        text-align: left;
+        float: left;
+        margin-right: 1rem;
+    }
+    
+    .custom-table td.empty-state {
+        display: block !important;
+        text-align: center !important;
+        padding: 2.5rem 1rem !important;
+        color: var(--text-muted);
+        border: none !important;
+    }
+    .custom-table td.empty-state::before {
+        content: none !important;
     }
 }
 

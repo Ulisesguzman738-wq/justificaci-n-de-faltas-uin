@@ -483,18 +483,18 @@ function renderAlumnoDashboard() {
         
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td><small style="color:var(--text-muted); font-family:monospace;">${j.ID_Justificante}</small></td>
-            <td><strong>${formatDateString(j.Fecha_Falta)}</strong></td>
-            <td><span class="badge badge-approved" style="background:#f3f4f6; color:var(--text-main);">${j.Parcial || 'Sin Asignar'}</span></td>
-            <td>${j.Motivo}</td>
-            <td>
+            <td data-label="ID"><small style="color:var(--text-muted); font-family:monospace;">${j.ID_Justificante}</small></td>
+            <td data-label="Fecha Falta"><strong>${formatDateString(j.Fecha_Falta)}</strong></td>
+            <td data-label="Parcial"><span class="badge badge-approved" style="background:#f3f4f6; color:var(--text-main);">${j.Parcial || 'Sin Asignar'}</span></td>
+            <td data-label="Motivo">${j.Motivo}</td>
+            <td data-label="Docentes Asignados">
                 ${teachersStatusHTML}
                 ${reviewLogHTML}
             </td>
-            <td>
+            <td data-label="Evidencia">
                 <a href="#" class="evidence-link" onclick="viewEvidenceModal('${j.ID_Justificante}')">📎 Ver Archivo</a>
             </td>
-            <td>
+            <td data-label="Estado / Seguimiento">
                 <span class="badge ${badgeClass}">${statusLabel}</span>
                 ${obsText ? `<br><small style="color: var(--text-muted); font-style: italic;">Obs: ${obsText}</small>` : ''}
             </td>
@@ -542,13 +542,13 @@ function renderCoordinacionDashboard() {
         row.onclick = () => selectRequestForReview(j.ID_Justificante);
         
         row.innerHTML = `
-            <td>
+            <td data-label="Alumno">
                 <strong>${studentUser ? studentUser.Nombre_Completo : 'Alumno'}</strong><br>
                 <small style="color: var(--text-muted);">${studentUser ? studentUser.Correo_Electronico : ''}</small>
             </td>
-            <td>${formatDateString(j.Fecha_Falta)}</td>
-            <td><span class="badge badge-pending">${j.Motivo}</span></td>
-            <td><button class="btn btn-primary btn-sm">Evaluar</button></td>
+            <td data-label="Fecha Falta">${formatDateString(j.Fecha_Falta)}</td>
+            <td data-label="Motivo"><span class="badge badge-pending">${j.Motivo}</span></td>
+            <td data-label="Acción"><button class="btn btn-primary btn-sm">Evaluar</button></td>
         `;
         tableBody.appendChild(row);
     });
@@ -710,18 +710,18 @@ function renderMaestroDashboard() {
         
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td><strong>${studentUser ? studentUser.Nombre_Completo : 'Alumno'}</strong></td>
-            <td><small>${studentUser ? studentUser.Correo_Electronico : 'N/A'}</small></td>
-            <td><strong>${formatDateString(j.Fecha_Falta)}</strong></td>
-            <td><span class="badge badge-approved" style="background:#f3f4f6; color:var(--text-main);">${j.Parcial}</span></td>
-            <td style="font-size: 0.85rem; font-style: italic; color: var(--primary);">
+            <td data-label="Alumno"><strong>${studentUser ? studentUser.Nombre_Completo : 'Alumno'}</strong></td>
+            <td data-label="Correo"><small>${studentUser ? studentUser.Correo_Electronico : 'N/A'}</small></td>
+            <td data-label="Fecha Falta"><strong>${formatDateString(j.Fecha_Falta)}</strong></td>
+            <td data-label="Parcial"><span class="badge badge-approved" style="background:#f3f4f6; color:var(--text-main);">${j.Parcial}</span></td>
+            <td data-label="Obs. Coordinación" style="font-size: 0.85rem; font-style: italic; color: var(--primary);">
                 "${coordComment}"
             </td>
-            <td>
+            <td data-label="Evidencia">
                 <a href="#" class="evidence-link" onclick="viewEvidenceModal('${j.ID_Justificante}')">📎 Evidencia</a>
             </td>
-            <td>${statusBadge}</td>
-            <td>${actionBtn}</td>
+            <td data-label="Estado">${statusBadge}</td>
+            <td data-label="Acción">${actionBtn}</td>
         `;
         tableBody.appendChild(row);
     });
