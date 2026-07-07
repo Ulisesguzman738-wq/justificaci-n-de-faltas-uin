@@ -907,13 +907,39 @@ document.getElementById('form-date').addEventListener('input', handleDateChange)
 document.getElementById('form-date').addEventListener('change', handleDateChange);
 
 // 9. NEW JUSTIFICATION SUBMISSION (Alumno)
+function showFormAlert(type, message) {
+    const errorDiv = document.getElementById('form-error-message');
+    const successDiv = document.getElementById('form-success-message');
+    if (!errorDiv || !successDiv) return;
+    
+    errorDiv.style.display = 'none';
+    successDiv.style.display = 'none';
+    
+    if (type === 'error') {
+        errorDiv.innerHTML = '⚠️ ' + message;
+        errorDiv.style.display = 'block';
+        errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (type === 'success') {
+        successDiv.innerHTML = '✔️ ' + message;
+        successDiv.style.display = 'block';
+        successDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+}
+
+// 9. NEW JUSTIFICATION SUBMISSION (Alumno)
 document.getElementById('new-justification-form').addEventListener('submit', function(e) {
     e.preventDefault();
     console.log("Iniciando envío de justificación...");
     
+    // Clear any previous alerts
+    const errorDiv = document.getElementById('form-error-message');
+    const successDiv = document.getElementById('form-success-message');
+    if (errorDiv) errorDiv.style.display = 'none';
+    if (successDiv) successDiv.style.display = 'none';
+    
     try {
         if (selectedDates.length === 0) {
-            alert('Debes seleccionar al menos una fecha.');
+            showFormAlert('error', 'Debes seleccionar al menos una fecha en el calendario.');
             return;
         }
         
@@ -922,12 +948,12 @@ document.getElementById('new-justification-form').addEventListener('submit', fun
         const desc = document.getElementById('form-description').value;
         
         if (!reason) {
-            alert('Por favor, selecciona un motivo de la lista.');
+            showFormAlert('error', 'Por favor, selecciona un motivo de la lista.');
             return;
         }
         
         if (!desc.trim()) {
-            alert('Por favor, escribe una descripción del motivo.');
+            showFormAlert('error', 'Por favor, escribe una descripción detallada del motivo.');
             return;
         }
         
@@ -940,7 +966,7 @@ document.getElementById('new-justification-form').addEventListener('submit', fun
         }
         
         if (selectedTeachers.length === 0) {
-            alert('Debes seleccionar al menos un maestro.');
+            showFormAlert('error', 'Debes seleccionar al menos un maestro de la lista.');
             return;
         }
         
@@ -948,7 +974,7 @@ document.getElementById('new-justification-form').addEventListener('submit', fun
         const file = fileInput.files[0];
         
         if (!file) {
-            alert('Debe cargar una evidencia física obligatoria (PDF/JPG/PNG).');
+            showFormAlert('error', 'Debe cargar un archivo de evidencia física obligatoriamente.');
             return;
         }
         
@@ -964,13 +990,13 @@ document.getElementById('new-justification-form').addEventListener('submit', fun
         ).length;
         
         if (existingCount >= 2) {
-            alert(`Límite alcanzado: Ya tienes registradas 2 justificaciones en el ${parcial} del periodo ${tetra}.`);
+            showFormAlert('error', `Límite alcanzado: Ya tienes registradas 2 justificaciones en el ${parcial} del periodo ${tetra}.`);
             return;
         }
         
         const reader = new FileReader();
         reader.onerror = function() {
-            alert("Error al leer el archivo de evidencia.");
+            showFormAlert('error', 'Error al leer el archivo de evidencia física.');
         };
         reader.onload = async function(event) {
             try {
@@ -997,11 +1023,11 @@ document.getElementById('new-justification-form').addEventListener('submit', fun
                             showSyncStatus('sincronizando', 'Archivo subido. Registrando...');
                         } else {
                             console.error("Error upload_file script:", resData.error);
-                            alert("Advertencia: No se pudo subir el archivo a Google Drive. Se guardará localmente.");
+                            showFormAlert('error', 'Advertencia: No se pudo subir a Google Drive, pero se guardará de forma local.');
                         }
                     } catch (err) {
                         console.error("Error upload_file fetch:", err);
-                        alert("Advertencia: Falló la subida del archivo a Google Drive. Se guardará localmente.");
+                        showFormAlert('error', 'Advertencia: Error de red con Google Drive, guardando de forma local.');
                     }
                 }
                 
@@ -1065,17 +1091,17 @@ document.getElementById('new-justification-form').addEventListener('submit', fun
                 selectedDates = [];
                 renderSelectedDates();
                 
-                alert('¡Solicitud registrada correctamente! Queda en estado "Pendiente" en Coordinación.');
+                showFormAlert('success', '¡Solicitud registrada correctamente! Queda en estado "Pendiente" en Coordinación.');
                 renderAlumnoDashboard();
             } catch (innerError) {
-                alert("Error interno al procesar el envío: " + innerError.message);
+                showFormAlert('error', 'Error interno al procesar el envío: ' + innerError.message);
                 console.error(innerError);
             }
         };
         
         reader.readAsDataURL(file);
     } catch (error) {
-        alert("Error al iniciar el envío: " + error.message);
+        showFormAlert('error', 'Error al iniciar el envío: ' + error.message);
         console.error(error);
     }
 });
