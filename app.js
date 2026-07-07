@@ -909,7 +909,12 @@ document.getElementById('new-justification-form').addEventListener('submit', fun
     const desc = document.getElementById('form-description').value;
     
     const teacherSelect = document.getElementById('form-teachers');
-    const selectedTeachers = Array.from(teacherSelect.selectedOptions).map(opt => opt.value);
+    const selectedTeachers = [];
+    for (let i = 0; i < teacherSelect.options.length; i++) {
+        if (teacherSelect.options[i].selected) {
+            selectedTeachers.push(teacherSelect.options[i].value);
+        }
+    }
     
     if (selectedTeachers.length === 0) {
         alert('Debes seleccionar al menos un maestro.');
