@@ -262,6 +262,11 @@ function getNormalizedRole(role) {
     return r;
 }
 
+function normalizeTetra(tetraStr) {
+    if (!tetraStr) return '';
+    return tetraStr.replace(/–/g, '-').replace(/\s+/g, ' ').trim().toLowerCase();
+}
+
 let currentUser = null;
 let currentRole = null;
 let activeRequestForReview = null;
@@ -445,7 +450,7 @@ function renderAlumnoDashboard() {
     
     const studentId = currentUser.ID_Usuario;
     
-    const studentRequests = DB.justificaciones.filter(j => j.ID_Alumno === studentId && j.Periodo_Tetra === activeTetra);
+    const studentRequests = DB.justificaciones.filter(j => j.ID_Alumno === studentId && normalizeTetra(j.Periodo_Tetra) === normalizeTetra(activeTetra));
     
     // Metrics
     const total = studentRequests.length;
@@ -539,7 +544,7 @@ function renderCoordinacionDashboard() {
     document.getElementById('welcome-title').innerText = `Panel de Coordinación`;
     document.getElementById('welcome-subtitle').innerText = 'Portal de validación y control escolar.';
     
-    const myJustifications = DB.justificaciones.filter(j => j.Periodo_Tetra === activeTetra);
+    const myJustifications = DB.justificaciones.filter(j => normalizeTetra(j.Periodo_Tetra) === normalizeTetra(activeTetra));
     
     const totalPending = myJustifications.filter(j => j.Estado === 'Pendiente').length;
     const totalApproved = myJustifications.filter(j => j.Estado === 'Aprobada' || j.Estado === 'Enterada por Maestro').length;
@@ -585,7 +590,7 @@ function renderCoordinacionDashboard() {
     
     if (activeRequestForReview) {
         const req = DB.justificaciones.find(j => j.ID_Justificante === activeRequestForReview.ID_Justificante);
-        if (req && req.Estado === 'Pendiente' && req.Periodo_Tetra === activeTetra) {
+        if (req && req.Estado === 'Pendiente' && normalizeTetra(req.Periodo_Tetra) === normalizeTetra(activeTetra)) {
             selectRequestForReview(req.ID_Justificante);
         } else {
             activeRequestForReview = null;
@@ -687,7 +692,7 @@ function renderMaestroDashboard() {
     const myJustifications = [];
     myMappings.forEach(m => {
         const j = DB.justificaciones.find(x => x.ID_Justificante === m.ID_Justificante);
-        if (j && j.Periodo_Tetra === activeTetra && (j.Estado === 'Aprobada' || j.Estado === 'Enterada por Maestro')) {
+        if (j && normalizeTetra(j.Periodo_Tetra) === normalizeTetra(activeTetra) && (j.Estado === 'Aprobada' || j.Estado === 'Enterada por Maestro')) {
             myJustifications.push({
                 justificacion: j,
                 maestro_mapping: m
