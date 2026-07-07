@@ -146,27 +146,37 @@ function loadDatabase() {
             DB = JSON.parse(JSON.stringify(officialDB)); // Deep clone
         } else {
             DB = JSON.parse(data);
-            // Sincronizar usuarios nuevos del código con la base de datos de caché local (localStorage)
-            let updated = false;
-            officialDB.usuarios.forEach(offU => {
-                const exists = DB.usuarios.some(u => u.Correo_Electronico.toLowerCase() === offU.Correo_Electronico.toLowerCase());
-                if (!exists) {
-                    DB.usuarios.push(offU);
-                    updated = true;
-                }
-            });
-            if (updated) {
-                try {
-                    localStorage.setItem(DB_KEY, JSON.stringify(DB));
-                } catch(e) {}
-            }
         }
     } catch (e) {
-        // Fallback for Safari/Chrome on file:// where localStorage might throw a SecurityError
-        console.warn("localStorage is restricted under file:// protocol. Falling back to in-memory database.");
-        if (!DB) {
-            DB = JSON.parse(JSON.stringify(officialDB));
+        console.warn("localStorage is restricted. Falling back to in-memory database.");
+        DB = JSON.parse(JSON.stringify(officialDB));
+    }
+    
+    // Garantizar que la base de datos y sus tablas no sean nulas o indefinidas (Esquema Defensivo)
+    if (!DB || typeof DB !== 'object') {
+        DB = JSON.parse(JSON.stringify(officialDB));
+    }
+    if (!DB.usuarios) DB.usuarios = [];
+    if (!DB.justificaciones) DB.justificaciones = [];
+    if (!DB.archivos_adjuntos) DB.archivos_adjuntos = [];
+    if (!DB.justificante_maestro) DB.justificante_maestro = [];
+    if (!DB.observaciones) DB.observaciones = [];
+    if (!DB.notificaciones) DB.notificaciones = [];
+    
+    // Sincronizar usuarios nuevos del código con la base de datos de caché local (localStorage)
+    let updated = false;
+    officialDB.usuarios.forEach(offU => {
+        const exists = DB.usuarios.some(u => u.Correo_Electronico.toLowerCase() === offU.Correo_Electronico.toLowerCase());
+        if (!exists) {
+            DB.usuarios.push(offU);
+            updated = true;
         }
+    });
+    
+    if (updated) {
+        try {
+            localStorage.setItem(DB_KEY, JSON.stringify(DB));
+        } catch(e) {}
     }
 }
 
@@ -893,6 +903,7 @@ function handleDateChange() {
     dateInput.value = '';
 }
 
+document.getElementById('form-date').addEventListener('input', handleDateChange);
 document.getElementById('form-date').addEventListener('change', handleDateChange);
 
 // 9. NEW JUSTIFICATION SUBMISSION (Alumno)
