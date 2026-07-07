@@ -898,153 +898,175 @@ document.getElementById('form-date').addEventListener('change', handleDateChange
 // 9. NEW JUSTIFICATION SUBMISSION (Alumno)
 document.getElementById('new-justification-form').addEventListener('submit', function(e) {
     e.preventDefault();
+    console.log("Iniciando envío de justificación...");
     
-    if (selectedDates.length === 0) {
-        alert('Debes seleccionar al menos una fecha.');
-        return;
-    }
-    
-    const date = selectedDates.join(', ');
-    const reason = document.getElementById('form-reason').value;
-    const desc = document.getElementById('form-description').value;
-    
-    if (!reason) {
-        alert('Por favor, selecciona un motivo de la lista.');
-        return;
-    }
-    
-    if (!desc.trim()) {
-        alert('Por favor, escribe una descripción del motivo.');
-        return;
-    }
-    
-    const teacherSelect = document.getElementById('form-teachers');
-    const selectedTeachers = [];
-    for (let i = 0; i < teacherSelect.options.length; i++) {
-        if (teacherSelect.options[i].selected) {
-            selectedTeachers.push(teacherSelect.options[i].value);
+    try {
+        if (selectedDates.length === 0) {
+            alert('Debes seleccionar al menos una fecha.');
+            return;
         }
-    }
-    
-    if (selectedTeachers.length === 0) {
-        alert('Debes seleccionar al menos un maestro.');
-        return;
-    }
-    
-    const fileInput = document.getElementById('form-file');
-    const file = fileInput.files[0];
-    
-    if (!file) {
-        alert('Debe cargar una evidencia física obligatoria (PDF/JPG/PNG).');
-        return;
-    }
-    
-    const { tetra, parcial } = getTetraAndParcial(selectedDates[0]);
-    const existingCount = DB.justificaciones.filter(j => 
-        j.ID_Alumno === currentUser.ID_Usuario && 
-        j.Estado !== 'Rechazada' &&
-        j.Periodo_Tetra === tetra &&
-        j.Parcial === parcial
-    ).length;
-    
-    if (existingCount >= 2) {
-        alert(`Límite alcanzado: Ya tienes registradas 2 justificaciones en el ${parcial} del periodo ${tetra}.`);
-        return;
-    }
-    
-    const reader = new FileReader();
-    reader.onload = async function(event) {
-        const base64Data = event.target.result;
-        const newJustId = 'just_' + Math.random().toString(36).substr(2, 9);
         
-        let fileUrl = base64Data;
+        const date = selectedDates.join(', ');
+        const reason = document.getElementById('form-reason').value;
+        const desc = document.getElementById('form-description').value;
         
-        if (GOOGLE_SCRIPT_URL) {
-            showSyncStatus('subiendo', 'Subiendo evidencia a Google Drive...');
-            try {
-                const response = await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action: 'upload_file',
-                        fileName: file.name,
-                        base64Data: base64Data
-                    }),
-                    headers: { 'Content-Type': 'text/plain' }
-                });
-                const resData = await response.json();
-                if (resData.success && resData.url) {
-                    fileUrl = resData.url;
-                    showSyncStatus('sincronizando', 'Archivo subido. Registrando...');
-                } else {
-                    console.error("Error upload_file script:", resData.error);
-                    alert("Advertencia: No se pudo subir el archivo a Google Drive. Se guardará localmente.");
-                }
-            } catch (err) {
-                console.error("Error upload_file fetch:", err);
-                alert("Advertencia: Falló la subida del archivo a Google Drive. Se guardará localmente.");
+        if (!reason) {
+            alert('Por favor, selecciona un motivo de la lista.');
+            return;
+        }
+        
+        if (!desc.trim()) {
+            alert('Por favor, escribe una descripción del motivo.');
+            return;
+        }
+        
+        const teacherSelect = document.getElementById('form-teachers');
+        const selectedTeachers = [];
+        for (let i = 0; i < teacherSelect.options.length; i++) {
+            if (teacherSelect.options[i].selected) {
+                selectedTeachers.push(teacherSelect.options[i].value);
             }
         }
         
-        const newJustification = {
-            ID_Justificante: newJustId,
-            ID_Alumno: currentUser.ID_Usuario,
-            Fecha_Falta: date,
-            Periodo_Tetra: tetra,
-            Parcial: parcial,
-            Motivo: reason,
-            Descripcion: desc,
-            Estado: 'Pendiente',
-            Fecha_Registro: new Date().toISOString(),
-            ID_Coordinador_Revisor: null,
-            Fecha_Revision: null
+        if (selectedTeachers.length === 0) {
+            alert('Debes seleccionar al menos un maestro.');
+            return;
+        }
+        
+        const fileInput = document.getElementById('form-file');
+        const file = fileInput.files[0];
+        
+        if (!file) {
+            alert('Debe cargar una evidencia física obligatoria (PDF/JPG/PNG).');
+            return;
+        }
+        
+        const { tetra, parcial } = getTetraAndParcial(selectedDates[0]);
+        if (!DB.justificaciones) {
+            DB.justificaciones = [];
+        }
+        const existingCount = DB.justificaciones.filter(j => 
+            j.ID_Alumno === currentUser.ID_Usuario && 
+            j.Estado !== 'Rechazada' &&
+            j.Periodo_Tetra === tetra &&
+            j.Parcial === parcial
+        ).length;
+        
+        if (existingCount >= 2) {
+            alert(`Límite alcanzado: Ya tienes registradas 2 justificaciones en el ${parcial} del periodo ${tetra}.`);
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onerror = function() {
+            alert("Error al leer el archivo de evidencia.");
+        };
+        reader.onload = async function(event) {
+            try {
+                const base64Data = event.target.result;
+                const newJustId = 'just_' + Math.random().toString(36).substr(2, 9);
+                
+                let fileUrl = base64Data;
+                
+                if (GOOGLE_SCRIPT_URL) {
+                    showSyncStatus('subiendo', 'Subiendo evidencia a Google Drive...');
+                    try {
+                        const response = await fetch(GOOGLE_SCRIPT_URL, {
+                            method: 'POST',
+                            body: JSON.stringify({
+                                action: 'upload_file',
+                                fileName: file.name,
+                                base64Data: base64Data
+                            }),
+                            headers: { 'Content-Type': 'text/plain' }
+                        });
+                        const resData = await response.json();
+                        if (resData.success && resData.url) {
+                            fileUrl = resData.url;
+                            showSyncStatus('sincronizando', 'Archivo subido. Registrando...');
+                        } else {
+                            console.error("Error upload_file script:", resData.error);
+                            alert("Advertencia: No se pudo subir el archivo a Google Drive. Se guardará localmente.");
+                        }
+                    } catch (err) {
+                        console.error("Error upload_file fetch:", err);
+                        alert("Advertencia: Falló la subida del archivo a Google Drive. Se guardará localmente.");
+                    }
+                }
+                
+                const newJustification = {
+                    ID_Justificante: newJustId,
+                    ID_Alumno: currentUser.ID_Usuario,
+                    Fecha_Falta: date,
+                    Periodo_Tetra: tetra,
+                    Parcial: parcial,
+                    Motivo: reason,
+                    Descripcion: desc,
+                    Estado: 'Pendiente',
+                    Fecha_Registro: new Date().toISOString(),
+                    ID_Coordinador_Revisor: null,
+                    Fecha_Revision: null
+                };
+                
+                const fileExt = file.name.split('.').pop().toUpperCase();
+                const newFile = {
+                    ID_Archivo: 'file_' + Math.random().toString(36).substr(2, 9),
+                    ID_Justificante: newJustId,
+                    Nombre_Archivo: file.name,
+                    Ruta_Archivo: fileUrl,
+                    Tipo_Archivo: ['PDF','JPG','PNG'].includes(fileExt) ? fileExt : 'PNG',
+                    Fecha_Carga: new Date().toISOString(),
+                    Tamano_KB: Math.round(file.size / 1024)
+                };
+                
+                if (!DB.justificaciones) DB.justificaciones = [];
+                if (!DB.archivos_adjuntos) DB.archivos_adjuntos = [];
+                if (!DB.justificante_maestro) DB.justificante_maestro = [];
+                if (!DB.observaciones) DB.observaciones = [];
+                
+                DB.justificaciones.push(newJustification);
+                DB.archivos_adjuntos.push(newFile);
+                
+                selectedTeachers.forEach(maestroId => {
+                    DB.justificante_maestro.push({
+                        ID: 'jm_' + Math.random().toString(36).substr(2, 9),
+                        ID_Justificante: newJustId,
+                        ID_Maestro: maestroId,
+                        Estado_Maestro: 'Pendiente',
+                        Fecha_Notificacion: new Date().toISOString(),
+                        Fecha_Justificacion: null
+                    });
+                });
+                
+                DB.observaciones.push({
+                    ID_Observacion: 'obs_' + Math.random().toString(36).substr(2, 9),
+                    ID_Justificante: newJustId,
+                    ID_Usuario: currentUser.ID_Usuario,
+                    Comentario: 'Solicitud registrada e ingresada al sistema.',
+                    Tipo: 'Registro',
+                    Fecha: new Date().toISOString()
+                });
+                
+                saveDatabase();
+                
+                document.getElementById('new-justification-form').reset();
+                document.getElementById('file-name-indicator').style.display = 'none';
+                selectedDates = [];
+                renderSelectedDates();
+                
+                alert('¡Solicitud registrada correctamente! Queda en estado "Pendiente" en Coordinación.');
+                renderAlumnoDashboard();
+            } catch (innerError) {
+                alert("Error interno al procesar el envío: " + innerError.message);
+                console.error(innerError);
+            }
         };
         
-        const fileExt = file.name.split('.').pop().toUpperCase();
-        const newFile = {
-            ID_Archivo: 'file_' + Math.random().toString(36).substr(2, 9),
-            ID_Justificante: newJustId,
-            Nombre_Archivo: file.name,
-            Ruta_Archivo: fileUrl,
-            Tipo_Archivo: ['PDF','JPG','PNG'].includes(fileExt) ? fileExt : 'PNG',
-            Fecha_Carga: new Date().toISOString(),
-            Tamano_KB: Math.round(file.size / 1024)
-        };
-        
-        DB.justificaciones.push(newJustification);
-        DB.archivos_adjuntos.push(newFile);
-        
-        selectedTeachers.forEach(maestroId => {
-            DB.justificante_maestro.push({
-                ID: 'jm_' + Math.random().toString(36).substr(2, 9),
-                ID_Justificante: newJustId,
-                ID_Maestro: maestroId,
-                Estado_Maestro: 'Pendiente',
-                Fecha_Notificacion: new Date().toISOString(),
-                Fecha_Justificacion: null
-            });
-        });
-        
-        DB.observaciones.push({
-            ID_Observacion: 'obs_' + Math.random().toString(36).substr(2, 9),
-            ID_Justificante: newJustId,
-            ID_Usuario: currentUser.ID_Usuario,
-            Comentario: 'Solicitud registrada e ingresada al sistema.',
-            Tipo: 'Registro',
-            Fecha: new Date().toISOString()
-        });
-        
-        saveDatabase();
-        
-        document.getElementById('new-justification-form').reset();
-        document.getElementById('file-name-indicator').style.display = 'none';
-        selectedDates = [];
-        renderSelectedDates();
-        
-        alert('¡Solicitud registrada correctamente! Queda en estado "Pendiente" en Coordinación.');
-        renderAlumnoDashboard();
-    };
-    
-    reader.readAsDataURL(file);
+        reader.readAsDataURL(file);
+    } catch (error) {
+        alert("Error al iniciar el envío: " + error.message);
+        console.error(error);
+    }
 });
 
 const dropzone = document.getElementById('file-dropzone');
