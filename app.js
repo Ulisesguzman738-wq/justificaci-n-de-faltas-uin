@@ -842,11 +842,18 @@ function validateMultipleDates() {
     let anyExpired = false;
     const now = new Date();
     selectedDates.forEach(d => {
-        const absenceDate = new Date(d + 'T23:59:59');
-        const diffMs = now.getTime() - absenceDate.getTime();
-        const diffHours = diffMs / (1000 * 60 * 60);
-        if (diffHours > 24) {
-            anyExpired = true;
+        const parts = d.split('-');
+        if (parts.length >= 3) {
+            const year = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10) - 1;
+            const day = parseInt(parts[2], 10);
+            const absenceDate = new Date(year, month, day, 23, 59, 59);
+            
+            const diffMs = now.getTime() - absenceDate.getTime();
+            const diffHours = diffMs / (1000 * 60 * 60);
+            if (diffHours > 24) {
+                anyExpired = true;
+            }
         }
     });
     
@@ -1259,7 +1266,26 @@ function viewEvidenceModal(justId) {
 
 function formatDateString(isoString) {
     if (!isoString) return 'N/A';
-    const date = new Date(isoString + 'T00:00:00');
+    if (isoString.includes(',')) {
+        return isoString.split(',').map(s => {
+            const parts = s.trim().split('-');
+            if (parts.length < 3) return 'N/A';
+            const year = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10) - 1;
+            const day = parseInt(parts[2], 10);
+            const date = new Date(year, month, day);
+            return date.toLocaleDateString('es-MX', {
+                month: 'short',
+                day: 'numeric'
+            });
+        }).join(', ');
+    }
+    const parts = isoString.split('-');
+    if (parts.length < 3) return 'N/A';
+    const year = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1;
+    const day = parseInt(parts[2], 10);
+    const date = new Date(year, month, day);
     return date.toLocaleDateString('es-MX', {
         year: 'numeric',
         month: 'short',
