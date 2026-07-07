@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Justifaltas - Control de Inasistencias UIN (Mac Version)</title>
-    <link rel="stylesheet" href="style.css?v=1.1.0">
+    <link rel="stylesheet" href="style.css?v=1.1.1">
 </head>
 <body>
 
@@ -212,7 +212,7 @@
 
                             <div class="form-group">
                                 <label for="form-reason">Motivo</label>
-                                <select id="form-reason" class="form-control" required>
+                                <select id="form-reason" class="form-control">
                                     <option value="">Selecciona un motivo</option>
                                     <option value="Consulta médica">Consulta médica</option>
                                     <option value="Familiar de fuerza mayor">Familiar de fuerza mayor</option>
@@ -222,7 +222,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="form-teachers">Maestros que recibirán la falta</label>
-                                <select id="form-teachers" class="form-control" multiple required>
+                                <select id="form-teachers" class="form-control" multiple>
                                     <!-- Dynamic teachers list -->
                                 </select>
                                 <span style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; display: block;">
@@ -231,7 +231,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="form-description">Descripción del Motivo</label>
-                                <textarea id="form-description" class="form-control" placeholder="Escribe detalles breves acerca de tu inasistencia..." required></textarea>
+                                <textarea id="form-description" class="form-control" placeholder="Escribe detalles breves acerca de tu inasistencia..."></textarea>
                             </div>
                             <div class="form-group">
                                 <label>Evidencia Física (Obligatorio)</label>
@@ -443,6 +443,6 @@
         </div>
     </div>
 
-    <script src="app.js?v=1.1.0"></script>
+    <script src="app.js?v=1.1.1"></script>
 </body>
 </html>

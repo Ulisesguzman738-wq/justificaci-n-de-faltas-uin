@@ -908,6 +908,16 @@ document.getElementById('new-justification-form').addEventListener('submit', fun
     const reason = document.getElementById('form-reason').value;
     const desc = document.getElementById('form-description').value;
     
+    if (!reason) {
+        alert('Por favor, selecciona un motivo de la lista.');
+        return;
+    }
+    
+    if (!desc.trim()) {
+        alert('Por favor, escribe una descripción del motivo.');
+        return;
+    }
+    
     const teacherSelect = document.getElementById('form-teachers');
     const selectedTeachers = [];
     for (let i = 0; i < teacherSelect.options.length; i++) {
