@@ -3,7 +3,7 @@
 // Google Sheets Integration Configuration
 // Coloca aquí la URL de la Web App obtenida al implementar tu Google Apps Script.
 // Si está vacía, el sistema operará en "Modo Local" (usando localStorage).
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw4dSgK3Swty6Zm2tOJoRrBDmKLE0btnAlJsrZjSAcmkYsa4os4Vs--kVJePYx0FXcs/exec";
+const GOOGLE_SCRIPT_URL = "";
 
 // Helper para actualizar el indicador visual de sincronización en la barra lateral
 function showSyncStatus(status, text) {
@@ -525,6 +525,7 @@ function renderAlumnoDashboard() {
             </td>
             <td data-label="Estado / Seguimiento">
                 <span class="badge ${badgeClass}">${statusLabel}</span>
+                ${j.Estado === 'Pendiente' ? `<button class="btn btn-danger btn-sm" style="padding: 2px 6px; font-size: 0.72rem; margin-top: 6px; display: block;" onclick="deleteStudentRequest('${j.ID_Justificante}')">🗑️ Eliminar</button>` : ''}
                 ${obsText ? `<br><small style="color: var(--text-muted); font-style: italic;">Obs: ${obsText}</small>` : ''}
             </td>
         `;
@@ -1384,6 +1385,55 @@ window.resetLocalCache = function() {
     if (confirm("¿Estás seguro de que deseas restablecer la base de datos local de pruebas? Esto cerrará tu sesión, borrará la caché local del navegador y cargará los datos de fábrica (incluyendo los nuevos usuarios).")) {
         localStorage.clear();
         location.reload();
+    }
+};
+
+window.deleteRequest = function(reqId) {
+    // 1. Eliminar de justificaciones
+    DB.justificaciones = DB.justificaciones.filter(j => j.ID_Justificante !== reqId);
+    
+    // 2. Eliminar de justificante_maestro
+    DB.justificante_maestro = DB.justificante_maestro.filter(jm => jm.ID_Justificante !== reqId);
+    
+    // 3. Eliminar de archivos_adjuntos
+    DB.archivos_adjuntos = DB.archivos_adjuntos.filter(a => a.ID_Justificante !== reqId);
+    
+    // 4. Eliminar de observaciones
+    DB.observaciones = DB.observaciones.filter(o => o.ID_Justificante !== reqId);
+    
+    // 5. Eliminar de notificaciones
+    DB.notificaciones = DB.notificaciones.filter(n => n.ID_Justificante !== reqId);
+    
+    saveDatabase();
+    
+    alert("La solicitud ha sido eliminada permanentemente de la base de datos.");
+    
+    if (currentRole === 'alumno') {
+        renderAlumnoDashboard();
+    } else if (currentRole === 'coordinacion') {
+        activeRequestForReview = null;
+        const detailsPanel = document.getElementById('coord-review-details');
+        if (detailsPanel) detailsPanel.removeAttribute('data-request-id');
+        renderCoordinacionDashboard();
+    }
+};
+
+window.deleteStudentRequest = function(reqId) {
+    if (confirm("¿Estás seguro de que deseas eliminar permanentemente esta solicitud? Esta acción no se puede deshacer y borrará la evidencia cargada.")) {
+        window.deleteRequest(reqId);
+    }
+};
+
+window.deleteCoordRequest = function() {
+    const detailsPanel = document.getElementById('coord-review-details');
+    if (!detailsPanel) return;
+    const reqId = detailsPanel.getAttribute('data-request-id');
+    if (!reqId) {
+        alert("Error: No hay ninguna solicitud seleccionada para eliminar.");
+        return;
+    }
+    if (confirm("¿Estás seguro de que deseas eliminar permanentemente esta solicitud de la base de datos general? Esta acción no se puede deshacer y afectará los registros del alumno y docentes.")) {
+        window.deleteRequest(reqId);
     }
 };
 
