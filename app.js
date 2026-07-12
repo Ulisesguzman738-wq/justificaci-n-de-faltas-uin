@@ -880,10 +880,22 @@ function validateMultipleDates() {
         return;
     }
     
-    const firstDate = selectedDates[0];
-    const { tetra, parcial } = getTetraAndParcial(firstDate);
-    calculatedTetra.value = tetra;
-    calculatedParcial.value = parcial;
+    let tetra = calculatedTetra.value;
+    let parcial = calculatedParcial.value;
+    
+    // Auto-compute if values are not set
+    if (!tetra || !parcial) {
+        const firstDate = selectedDates[0];
+        const computed = getTetraAndParcial(firstDate);
+        if (!tetra) {
+            tetra = computed.tetra;
+            calculatedTetra.value = tetra;
+        }
+        if (!parcial) {
+            parcial = computed.parcial;
+            calculatedParcial.value = parcial;
+        }
+    }
     
     let anyExpired = false;
     const now = new Date();
@@ -991,6 +1003,10 @@ document.getElementById('form-date').addEventListener('keydown', function(e) {
     }
 });
 
+// Bind Periodo and Parcial dropdown changes to re-run limit validations
+document.getElementById('form-calculated-tetra').addEventListener('change', validateMultipleDates);
+document.getElementById('form-calculated-parcial').addEventListener('change', validateMultipleDates);
+
 // 9. NEW JUSTIFICATION SUBMISSION (Alumno)
 function showFormAlert(type, message) {
     if (document.activeElement) {
@@ -1068,7 +1084,19 @@ document.getElementById('new-justification-form').addEventListener('submit', fun
             return;
         }
         
-        const { tetra, parcial } = getTetraAndParcial(selectedDates[0]);
+        const tetra = document.getElementById('form-calculated-tetra').value;
+        const parcial = document.getElementById('form-calculated-parcial').value;
+        
+        if (!tetra) {
+            showFormAlert('error', 'Por favor, selecciona un Periodo (Tetra) para la falta.');
+            return;
+        }
+        
+        if (!parcial) {
+            showFormAlert('error', 'Por favor, selecciona un Parcial para la falta.');
+            return;
+        }
+        
         if (!DB.justificaciones) {
             DB.justificaciones = [];
         }

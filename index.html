@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Justifaltas - Control de Inasistencias UIN (Mac Version)</title>
-    <link rel="stylesheet" href="style.css?v=1.2.5">
+    <link rel="stylesheet" href="style.css?v=1.2.6">
 </head>
 <body>
 
@@ -225,13 +225,23 @@
 
                             <div class="form-row-group">
                                 <div class="form-group">
-                                    <label>Periodo (Tetra) de la Falta</label>
-                                    <input type="text" id="form-calculated-tetra" class="form-control" readonly style="background-color: var(--bg-main); font-weight: 600; cursor: not-allowed;">
+                                    <label for="form-calculated-tetra">Periodo (Tetra) de la Falta</label>
+                                    <select id="form-calculated-tetra" class="form-control" style="font-weight: 600;">
+                                        <option value="">Selecciona Periodo</option>
+                                        <option value="Enero – Abril">Enero – Abril</option>
+                                        <option value="Mayo – Agosto">Mayo – Agosto</option>
+                                        <option value="Septiembre – Diciembre">Septiembre – Diciembre</option>
+                                    </select>
                                 </div>
                                 
                                 <div class="form-group">
-                                    <label>Parcial asignado (Calculado por fecha)</label>
-                                    <input type="text" id="form-calculated-parcial" class="form-control" readonly style="background-color: var(--bg-main); font-weight: 600; cursor: not-allowed;">
+                                    <label for="form-calculated-parcial">Parcial de la Falta</label>
+                                    <select id="form-calculated-parcial" class="form-control" style="font-weight: 600;">
+                                        <option value="">Selecciona Parcial</option>
+                                        <option value="Parcial 1">Parcial 1</option>
+                                        <option value="Parcial 2">Parcial 2</option>
+                                        <option value="Parcial 3">Parcial 3</option>
+                                    </select>
                                     <div id="form-parcial-limit-warning" style="display:none; background-color: var(--danger-light); color: var(--danger); padding: 0.75rem; border-radius: var(--radius-md); font-weight: 600; font-size: 0.8rem; margin-top: 8px; border-left: 4px solid var(--danger);">
                                         ⚠️ Has alcanzado el límite permitido de 2 evidencias para este parcial en el periodo seleccionado.
                                     </div>
@@ -475,6 +485,6 @@
         </div>
     </div>
 
-    <script src="app.js?v=1.2.5"></script>
+    <script src="app.js?v=1.2.6"></script>
 </body>
 </html>
