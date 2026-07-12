@@ -1096,12 +1096,19 @@ select.form-control[multiple] {
         transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
     }
     
-    /* 2-Column Grid Layout inside the justification form */
+    /* Make outer layout vertical so the card occupies full width horizontally */
+    .dashboard-layout {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 2rem !important;
+    }
+    
+    /* 3-Column Grid Layout inside the justification form */
     #new-justification-form {
         display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
-        column-gap: 1.5rem !important;
-        row-gap: 1.25rem !important;
+        grid-template-columns: 1fr 1fr 1fr !important;
+        column-gap: 2.25rem !important;
+        row-gap: 1.5rem !important;
     }
     
     #new-justification-form .form-group {
@@ -1109,12 +1116,20 @@ select.form-control[multiple] {
     }
     
     #new-justification-form .full-width {
-        grid-column: span 2 !important;
+        grid-column: span 3 !important;
+    }
+    
+    /* Internal sub-grid for Period and Parcial outputs */
+    .form-row-group {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        column-gap: 1.25rem !important;
+        align-items: start !important;
     }
     
     #new-justification-form button[type="submit"] {
-        grid-column: span 2 !important;
-        margin-top: 0.75rem !important;
+        grid-column: span 3 !important;
+        margin-top: 1rem !important;
         border-radius: 12px !important;
         padding: 0.9rem !important;
         background: #0071e3 !important; /* Premium Apple blue */

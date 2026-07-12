@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Justifaltas - Control de Inasistencias UIN (Mac Version)</title>
-    <link rel="stylesheet" href="style.css?v=1.1.8">
+    <link rel="stylesheet" href="style.css?v=1.1.9">
 </head>
 <body>
 
@@ -209,20 +209,22 @@
                                 ⚠️ El tiempo límite de 24 horas para justificar esta falta ha expirado. El envío está bloqueado.
                             </div>
 
-                            <div class="form-group">
-                                <label>Periodo (Tetra) de la Falta</label>
-                                <input type="text" id="form-calculated-tetra" class="form-control" readonly style="background-color: var(--bg-main); font-weight: 600; cursor: not-allowed;">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Parcial asignado (Calculado por fecha)</label>
-                                <input type="text" id="form-calculated-parcial" class="form-control" readonly style="background-color: var(--bg-main); font-weight: 600; cursor: not-allowed;">
-                                <div id="form-parcial-limit-warning" style="display:none; background-color: var(--danger-light); color: var(--danger); padding: 0.75rem; border-radius: var(--radius-md); font-weight: 600; font-size: 0.8rem; margin-top: 8px; border-left: 4px solid var(--danger);">
-                                    ⚠️ Has alcanzado el límite permitido de 2 evidencias para este parcial en el periodo seleccionado.
+                            <div class="form-row-group">
+                                <div class="form-group">
+                                    <label>Periodo (Tetra) de la Falta</label>
+                                    <input type="text" id="form-calculated-tetra" class="form-control" readonly style="background-color: var(--bg-main); font-weight: 600; cursor: not-allowed;">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Parcial asignado (Calculado por fecha)</label>
+                                    <input type="text" id="form-calculated-parcial" class="form-control" readonly style="background-color: var(--bg-main); font-weight: 600; cursor: not-allowed;">
+                                    <div id="form-parcial-limit-warning" style="display:none; background-color: var(--danger-light); color: var(--danger); padding: 0.75rem; border-radius: var(--radius-md); font-weight: 600; font-size: 0.8rem; margin-top: 8px; border-left: 4px solid var(--danger);">
+                                        ⚠️ Has alcanzado el límite permitido de 2 evidencias para este parcial en el periodo seleccionado.
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="form-group full-width">
+                            <div class="form-group">
                                 <label for="form-teachers">Maestros que recibirán la falta</label>
                                 <select id="form-teachers" class="form-control" multiple>
                                     <!-- Dynamic teachers list -->
@@ -231,11 +233,11 @@
                                     Mantén presionado Ctrl (o Cmd) para seleccionar múltiples maestros.
                                 </span>
                             </div>
-                            <div class="form-group full-width">
+                            <div class="form-group">
                                 <label for="form-description">Descripción del Motivo</label>
                                 <textarea id="form-description" class="form-control" placeholder="Escribe detalles breves acerca de tu inasistencia..."></textarea>
                             </div>
-                            <div class="form-group full-width">
+                            <div class="form-group">
                                 <label>Evidencia Física (Obligatorio)</label>
                                 <div class="file-upload-wrapper" id="file-dropzone">
                                     <span class="file-upload-icon">📁</span>
@@ -459,6 +461,6 @@
         </div>
     </div>
 
-    <script src="app.js?v=1.1.8"></script>
+    <script src="app.js?v=1.1.9"></script>
 </body>
 </html>
