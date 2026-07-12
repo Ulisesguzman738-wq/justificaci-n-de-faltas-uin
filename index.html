@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Justifaltas - Control de Inasistencias UIN (Mac Version)</title>
-    <link rel="stylesheet" href="style.css?v=1.2.0">
+    <link rel="stylesheet" href="style.css?v=1.2.1">
 </head>
 <body>
 
@@ -189,7 +189,10 @@
 
                             <div class="form-group">
                                 <label for="form-date">Fecha(s) de la Falta</label>
-                                <input type="date" id="form-date" class="form-control">
+                                <div style="display: flex; gap: 8px; width: 100%;">
+                                    <input type="text" id="form-date" class="form-control" placeholder="DD/MM/AAAA" style="flex: 1;">
+                                    <button type="button" id="btn-add-date" class="btn btn-primary" style="padding: 0 1.25rem; font-size: 1.25rem; font-weight: bold; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; height: auto;">+</button>
+                                </div>
                                 <div id="selected-dates-container" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;"></div>
                             </div>
 
@@ -461,6 +464,6 @@
         </div>
     </div>
 
-    <script src="app.js?v=1.2.0"></script>
+    <script src="app.js?v=1.2.1"></script>
 </body>
 </html>

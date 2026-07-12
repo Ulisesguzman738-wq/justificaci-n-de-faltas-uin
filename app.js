@@ -924,20 +924,69 @@ function validateMultipleDates() {
     }
 }
 
+function parseManualDate(str) {
+    str = str.trim();
+    // Regex for DD/MM/YYYY or DD-MM-YYYY
+    let regex1 = /^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/;
+    let match1 = str.match(regex1);
+    if (match1) {
+        let day = parseInt(match1[1], 10);
+        let month = parseInt(match1[2], 10);
+        let year = parseInt(match1[3], 10);
+        
+        if (month < 1 || month > 12) return null;
+        let maxDays = new Date(year, month, 0).getDate();
+        if (day < 1 || day > maxDays) return null;
+        
+        return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    }
+    
+    // Regex for YYYY-MM-DD
+    let regex2 = /^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/;
+    let match2 = str.match(regex2);
+    if (match2) {
+        let year = parseInt(match2[1], 10);
+        let month = parseInt(match2[2], 10);
+        let day = parseInt(match2[3], 10);
+        
+        if (month < 1 || month > 12) return null;
+        let maxDays = new Date(year, month, 0).getDate();
+        if (day < 1 || day > maxDays) return null;
+        
+        return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    }
+    
+    return null;
+}
+
 function handleDateChange() {
     const dateInput = document.getElementById('form-date');
-    const dateVal = dateInput.value;
-    if (!dateVal) return;
+    const inputVal = dateInput.value.trim();
+    if (!inputVal) return;
     
-    if (!selectedDates.includes(dateVal)) {
-        selectedDates.push(dateVal);
+    const parsedDate = parseManualDate(inputVal);
+    if (!parsedDate) {
+        alert('Formato de fecha inválido. Por favor, ingresa una fecha válida en formato DD/MM/AAAA (ejemplo: 12/07/2026).');
+        return;
+    }
+    
+    if (!selectedDates.includes(parsedDate)) {
+        selectedDates.push(parsedDate);
         renderSelectedDates();
+    } else {
+        alert('Esta fecha ya ha sido seleccionada.');
     }
     dateInput.value = '';
 }
 
-document.getElementById('form-date').addEventListener('input', handleDateChange);
-document.getElementById('form-date').addEventListener('change', handleDateChange);
+// Bind manual date handlers
+document.getElementById('btn-add-date').addEventListener('click', handleDateChange);
+document.getElementById('form-date').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault(); // Prevent submitting the whole form
+        handleDateChange();
+    }
+});
 
 // 9. NEW JUSTIFICATION SUBMISSION (Alumno)
 function showFormAlert(type, message) {
