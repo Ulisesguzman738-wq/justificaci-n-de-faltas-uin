@@ -3,7 +3,7 @@
 // Google Sheets Integration Configuration
 // Coloca aquí la URL de la Web App obtenida al implementar tu Google Apps Script.
 // Si está vacía, el sistema operará en "Modo Local" (usando localStorage).
-const GOOGLE_SCRIPT_URL = "";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwo-m3rR6vx2yQVuEcbKbIM_tooOW5uGD2ffrMdYMoNNCDfEvSd8njEGLU98FDkbVU0/exec";
 
 // Helper para actualizar el indicador visual de sincronización en la barra lateral
 function showSyncStatus(status, text) {
