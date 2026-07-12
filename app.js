@@ -1958,10 +1958,20 @@ window.renderManagementUsers = function() {
     if (!tableBody) return;
     tableBody.innerHTML = '';
     
-    // Sort users: coordinators first, then teachers, then students
-    const sortedUsers = [...DB.usuarios].sort((a, b) => {
-        if (a.Rol !== b.Rol) return a.Rol.localeCompare(b.Rol);
-        return a.Nombre_Completo.localeCompare(b.Nombre_Completo);
+    if (!DB || !DB.usuarios) {
+        tableBody.innerHTML = `<tr><td colspan="4" class="empty-state">No hay usuarios cargados en la base de datos.</td></tr>`;
+        return;
+    }
+    
+    // Sort users safely handling null, undefined or non-string values
+    const sortedUsers = [...DB.usuarios].filter(u => u && u.Nombre_Completo && u.Correo_Electronico).sort((a, b) => {
+        const rolA = String(a.Rol || '').toLowerCase().trim();
+        const rolB = String(b.Rol || '').toLowerCase().trim();
+        if (rolA !== rolB) return rolA.localeCompare(rolB);
+        
+        const nameA = String(a.Nombre_Completo || '').trim();
+        const nameB = String(b.Nombre_Completo || '').trim();
+        return nameA.localeCompare(nameB);
     });
     
     sortedUsers.forEach(u => {
