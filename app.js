@@ -854,7 +854,7 @@ function renderSelectedDates() {
         pill.style.gap = '6px';
         pill.innerHTML = `
             <span>${formatDateString(dateVal)}</span>
-            <span style="cursor:pointer; font-weight:800; font-size: 0.95rem; line-height: 1;" onclick="removeSelectedDate('${dateVal}')">×</span>
+            <span style="cursor:pointer; font-weight:800; font-size: 1.1rem; line-height: 1; padding: 2px 8px; margin-left: 2px; display: inline-block;" onclick="removeSelectedDate('${dateVal}')">×</span>
         `;
         container.appendChild(pill);
     });
