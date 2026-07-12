@@ -315,7 +315,7 @@ let currentRole = null;
 let activeRequestForReview = null;
 
 function initApp() {
-    const savedTheme = localStorage.getItem('selected-theme') || 'gold';
+    const savedTheme = localStorage.getItem('selected-theme') || 'uin-blue';
     applySelectedTheme(savedTheme);
     
     loadDatabase();
@@ -1660,22 +1660,22 @@ window.applySelectedTheme = function(themeName) {
     document.body.style.backgroundImage = '';
     document.body.style.backgroundColor = '';
     
-    if (themeName === 'gold') {
-        // Cosmic Gold Dark Theme (Default)
-        root.style.setProperty('--primary', 'hsl(43, 100%, 50%)');
-        root.style.setProperty('--primary-light', 'rgba(255, 184, 0, 0.12)');
-        root.style.setProperty('--primary-dark', 'hsl(38, 100%, 45%)');
-        root.style.setProperty('--btn-text', '#000000');
-        root.style.setProperty('--btn-shadow', 'rgba(255, 184, 0, 0.25)');
+    if (themeName === 'uin-blue') {
+        // UIN Blue & Cosmic Dark Theme (Default)
+        root.style.setProperty('--primary', 'hsl(210, 100%, 50%)'); // UIN Blue
+        root.style.setProperty('--primary-light', 'rgba(0, 113, 227, 0.12)');
+        root.style.setProperty('--primary-dark', 'hsl(210, 100%, 42%)');
+        root.style.setProperty('--btn-text', '#ffffff');
+        root.style.setProperty('--btn-shadow', 'rgba(0, 113, 227, 0.25)');
         root.style.setProperty('--bg-main', '#000000');
         root.style.setProperty('--bg-card', 'rgba(22, 22, 23, 0.65)');
         root.style.setProperty('--bg-sidebar', 'rgba(18, 18, 19, 0.85)');
-        root.style.setProperty('--border-color', 'rgba(255, 184, 0, 0.08)');
+        root.style.setProperty('--border-color', 'rgba(0, 113, 227, 0.12)');
         root.style.setProperty('--text-main', 'hsl(0, 0%, 96%)');
         root.style.setProperty('--text-muted', 'hsl(0, 0%, 65%)');
         
         document.body.style.setProperty('background-image', 
-            'radial-gradient(circle at 85% 85%, rgba(255, 184, 0, 0.07), transparent 50%), ' +
+            'radial-gradient(circle at 85% 85%, rgba(0, 113, 227, 0.08), transparent 50%), ' +
             'radial-gradient(circle at 15% 15%, rgba(138, 43, 226, 0.05), transparent 45%), ' +
             'linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px), ' +
             'linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px)', 'important');
@@ -1744,8 +1744,8 @@ window.applySelectedTheme = function(themeName) {
     // Update metric blue backgrounds to align with theme accent
     const metricBlue = document.querySelectorAll('.metric-icon.blue');
     metricBlue.forEach(el => {
-        el.style.backgroundColor = (themeName === 'light') ? 'rgba(0, 122, 255, 0.1)' : 'rgba(255, 184, 0, 0.12)';
-        el.style.color = (themeName === 'light') ? 'var(--primary)' : 'var(--primary)';
+        el.style.backgroundColor = 'var(--primary-light)';
+        el.style.color = 'var(--primary)';
     });
     
     const selector = document.getElementById('theme-selector');

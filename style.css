@@ -1,13 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-    /* Premium Gold & Cosmic Dark Theme Color Palette */
-    --primary: hsl(43, 100%, 50%);       /* Radiant Amber Gold (#FFB800) */
-    --primary-light: rgba(255, 184, 0, 0.12);
-    --primary-dark: hsl(38, 100%, 45%);
+    /* UIN Blue & Cosmic Dark Theme Color Palette (Default) */
+    --primary: hsl(210, 100%, 50%);       /* Vibrant University Blue (#0071e3) */
+    --primary-light: rgba(0, 113, 227, 0.12);
+    --primary-dark: hsl(210, 100%, 42%);
     
-    --btn-text: #000000;
-    --btn-shadow: rgba(255, 184, 0, 0.25);
+    --btn-text: #ffffff;
+    --btn-shadow: rgba(0, 113, 227, 0.25);
     
     --success: hsl(120, 60%, 50%);       /* Vibrant Apple Green (#30D158) */
     --success-light: rgba(48, 209, 88, 0.12);
@@ -52,7 +52,7 @@
 body {
     background-color: var(--bg-main) !important;
     background-image: 
-        radial-gradient(circle at 85% 85%, rgba(255, 184, 0, 0.07), transparent 50%),
+        radial-gradient(circle at 85% 85%, rgba(0, 113, 227, 0.08), transparent 50%),
         radial-gradient(circle at 15% 15%, rgba(138, 43, 226, 0.05), transparent 45%),
         linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px) !important;
