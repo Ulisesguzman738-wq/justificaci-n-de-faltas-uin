@@ -487,7 +487,7 @@ function getTetraAndParcial(dateStr) {
 // 5. ALUMNO DASHBOARD LOGIC
 function renderAlumnoDashboard() {
     const activeTetra = document.getElementById('global-tetra-filter').value;
-    document.getElementById('welcome-title').innerText = `¡Hola, ${currentUser.Nombre_Completo}!`;
+    document.getElementById('welcome-title').innerHTML = `¡Hola, <span class="text-bold">${currentUser.Nombre_Completo}</span>!`;
     document.getElementById('welcome-subtitle').innerText = 'Registra tus faltas y consulta el estatus de tus justificantes.';
     document.getElementById('student-history-title').innerText = `Mis Solicitudes (${activeTetra})`;
     
@@ -584,7 +584,7 @@ function renderAlumnoDashboard() {
 // 6. COORDINACION DASHBOARD LOGIC
 function renderCoordinacionDashboard() {
     const activeTetra = document.getElementById('global-tetra-filter').value;
-    document.getElementById('welcome-title').innerText = `Panel de Coordinación`;
+    document.getElementById('welcome-title').innerHTML = `Panel de <span class="text-bold">Coordinación</span>`;
     document.getElementById('welcome-subtitle').innerText = 'Portal de validación y control escolar.';
     
     const myJustifications = DB.justificaciones.filter(j => normalizeTetra(j.Periodo_Tetra) === normalizeTetra(activeTetra));
@@ -726,7 +726,7 @@ function resetEvidenceViewer() {
 // 7. MAESTRO DASHBOARD LOGIC
 function renderMaestroDashboard() {
     const activeTetra = document.getElementById('global-tetra-filter').value;
-    document.getElementById('welcome-title').innerText = `Panel del Docente`;
+    document.getElementById('welcome-title').innerHTML = `Panel del <span class="text-bold">Docente</span>`;
     document.getElementById('welcome-subtitle').innerText = 'Revisa notificaciones de justificantes escolares y confirma su recepción.';
     
     const teacherId = currentUser.ID_Usuario;
