@@ -107,22 +107,22 @@ const DB_KEY = 'justifaltas_db_final_v2';
 const officialDB = {
     usuarios: [
         { ID_Usuario: 'sim_user_epy1yk2', Correo_Electronico: 'Prueba@uin.edu.mx', Nombre_Completo: 'Usuario de Pruebas UIN', Rol: 'alumno', Contrasena: '12345', Fecha_Registro: '2026-06-14T00:00:00Z', Activo: 1 },
-        { ID_Usuario: 'u1', Correo_Electronico: 'ulisega03s24a@uinteramericana.edu.mx', Nombre_Completo: 'Ulise Guzman Alvaro', Rol: 'alumno', Contrasena: '12345', Fecha_Registro: '2026-05-10T00:00:00Z', Activo: 1 },
-        { ID_Usuario: 'u2', Correo_Electronico: 'syanethh03s24a@uinteramericana.edu.mx', Nombre_Completo: 'Sandra Yanet Hernández Hernández', Rol: 'alumno', Contrasena: '12345', Fecha_Registro: '2026-05-11T00:00:00Z', Activo: 1 },
-        { ID_Usuario: 'u3', Correo_Electronico: 'irenehh03s24a@uinteramericana.edu.mx', Nombre_Completo: 'Irene Hernández Hernández', Rol: 'alumno', Contrasena: '12345', Fecha_Registro: null, Activo: 1 },
-        { ID_Usuario: 'u4', Correo_Electronico: 'iyuleidals03s24a@uinteramericana.edu.mx', Nombre_Completo: 'Itzel Yuleida Lila Sanchez', Rol: 'alumno', Contrasena: '12345', Fecha_Registro: null, Activo: 1 },
-        { ID_Usuario: 'u5', Correo_Electronico: 'dantonioie03s24a@uinteramericana.edu.mx', Nombre_Completo: 'Diego Antonio Iracheta Escareño', Rol: 'alumno', Contrasena: '12345', Fecha_Registro: null, Activo: 1 },
-        { ID_Usuario: 't1', Correo_Electronico: 'mdavila0311@uinteramericana.edu.mx', Nombre_Completo: 'Miguel Angel Davila Calzada', Rol: 'maestro', Contrasena: '12345', Fecha_Registro: '2026-05-01T00:00:00Z', Activo: 1 },
-        { ID_Usuario: 't2', Correo_Electronico: 'ana.hernandez03ea26@uinteramericana.edu.mx', Nombre_Completo: 'Ana Eloisa Hernández Jimenez', Rol: 'maestro', Contrasena: '12345', Fecha_Registro: '2026-05-01T00:00:00Z', Activo: 1 },
-        { ID_Usuario: 't3', Correo_Electronico: 'oscar.alavez03ea26p@uinteramericana.edu.mx', Nombre_Completo: 'Oscar Alavez Reyes', Rol: 'maestro', Contrasena: '12345', Fecha_Registro: null, Activo: 1 },
-        { ID_Usuario: 't4', Correo_Electronico: 'andres.simon03ea26@uinteramericana.edu.mx', Nombre_Completo: 'Andres Simón Treviño', Rol: 'maestro', Contrasena: '12345', Fecha_Registro: null, Activo: 1 },
-        { ID_Usuario: 't5', Correo_Electronico: 'direccionsc_sd25o@uinteramericana.edu.mx', Nombre_Completo: 'Lic. Sandra Silva', Rol: 'coordinacion', Contrasena: '12345', Fecha_Registro: null, Activo: 1 },
-        { ID_Usuario: 't6', Correo_Electronico: 'escolarsc@universidadinteramericana.edu.mx', Nombre_Completo: 'Escolar Santa Catarina', Rol: 'coordinacion', Contrasena: '12345', Fecha_Registro: null, Activo: 1 }
+        { ID_Usuario: 'Uguzman', Correo_Electronico: 'ulisega03s24a@uinteramericana.edu.mx', Nombre_Completo: 'Ulise Guzman Alvaro', Rol: 'alumno', Contrasena: '12345', Fecha_Registro: '2026-05-10T00:00:00Z', Activo: 1 },
+        { ID_Usuario: 'Syanet', Correo_Electronico: 'syanethh03s24a@uinteramericana.edu.mx', Nombre_Completo: 'Sandra Yanet Hernández Hernández', Rol: 'alumno', Contrasena: '12345', Fecha_Registro: '2026-05-11T00:00:00Z', Activo: 1 },
+        { ID_Usuario: 'Ihernandez', Correo_Electronico: 'irenehh03s24a@uinteramericana.edu.mx', Nombre_Completo: 'Irene Hernández Hernández', Rol: 'alumno', Contrasena: '12345', Fecha_Registro: null, Activo: 1 },
+        { ID_Usuario: 'Yulila', Correo_Electronico: 'iyuleidals03s24a@uinteramericana.edu.mx', Nombre_Completo: 'Itzel Yuleida Lila Sanchez', Rol: 'alumno', Contrasena: '12345', Fecha_Registro: null, Activo: 1 },
+        { ID_Usuario: 'Dantonio', Correo_Electronico: 'dantonioie03s24a@uinteramericana.edu.mx', Nombre_Completo: 'Diego Antonio Iracheta Escareño', Rol: 'alumno', Contrasena: '12345', Fecha_Registro: null, Activo: 1 },
+        { ID_Usuario: 'Mangel', Correo_Electronico: 'mdavila0311@uinteramericana.edu.mx', Nombre_Completo: 'Miguel Angel Davila Calzada', Rol: 'maestro', Contrasena: '12345', Fecha_Registro: '2026-05-01T00:00:00Z', Activo: 1 },
+        { ID_Usuario: 'Aeloisa', Correo_Electronico: 'ana.hernandez03ea26@uinteramericana.edu.mx', Nombre_Completo: 'Ana Eloisa Hernández Jimenez', Rol: 'maestro', Contrasena: '12345', Fecha_Registro: '2026-05-01T00:00:00Z', Activo: 1 },
+        { ID_Usuario: 'Oalavez', Correo_Electronico: 'oscar.alavez03ea26p@uinteramericana.edu.mx', Nombre_Completo: 'Oscar Alavez Reyes', Rol: 'maestro', Contrasena: '12345', Fecha_Registro: null, Activo: 1 },
+        { ID_Usuario: 'Asimon', Correo_Electronico: 'andres.simon03ea26@uinteramericana.edu.mx', Nombre_Completo: 'Andres Simón Treviño', Rol: 'maestro', Contrasena: '12345', Fecha_Registro: null, Activo: 1 },
+        { ID_Usuario: 'SanSilva', Correo_Electronico: 'direccionsc_sd25o@uinteramericana.edu.mx', Nombre_Completo: 'Lic. Sandra Silva', Rol: 'coordinacion', Contrasena: '12345', Fecha_Registro: null, Activo: 1 },
+        { ID_Usuario: 'EscSanta', Correo_Electronico: 'escolarsc@universidadinteramericana.edu.mx', Nombre_Completo: 'Escolar Santa Catarina', Rol: 'coordinacion', Contrasena: '12345', Fecha_Registro: null, Activo: 1 }
     ],
     justificaciones: [
         {
             ID_Justificante: 'j_demo_001',
-            ID_Alumno: 'u4',
+            ID_Alumno: 'Yulila',
             Fecha_Falta: '2026-06-14',
             Periodo_Tetra: 'Mayo – Agosto',
             Parcial: 'Parcial 2',
@@ -149,7 +149,7 @@ const officialDB = {
         {
             ID: 'jm_demo_001',
             ID_Justificante: 'j_demo_001',
-            ID_Maestro: 't1',
+            ID_Maestro: 'Mangel',
             Estado_Maestro: 'Pendiente',
             Fecha_Notificacion: '2026-06-14T10:05:00Z',
             Fecha_Justificacion: null
@@ -159,7 +159,7 @@ const officialDB = {
         {
             ID_Observacion: 'obs_demo_001',
             ID_Justificante: 'j_demo_001',
-            ID_Usuario: 't5',
+            ID_Usuario: 'SanSilva',
             Comentario: 'Pendiente de revisión por coordinación.',
             Tipo: 'Revision',
             Fecha: '2026-06-14T10:10:00Z'
@@ -168,9 +168,9 @@ const officialDB = {
     notificaciones: [
         {
             ID_Notificacion: 'n_demo_001',
-            ID_Usuario: 't1',
+            ID_Usuario: 'Mangel',
             ID_Justificante: 'j_demo_001',
-            Mensaje: 'Nueva solicitud pendiente de aprobación por coordinación.',
+            Message: 'Nueva solicitud pendiente de aprobación por coordinación.',
             Leida: 0,
             Fecha: '2026-06-14T10:10:00Z'
         }
@@ -335,15 +335,19 @@ let currentUser = null;
 let currentRole = null;
 let activeRequestForReview = null;
 
-function initApp() {
+async function initApp() {
     const savedTheme = localStorage.getItem('selected-theme') || 'uin-blue';
     applySelectedTheme(savedTheme);
     
     loadDatabase();
     
-    // Iniciar sincronización si hay URL configurada
+    // Iniciar sincronización de forma prioritaria con Google Sheets antes de iniciar sesion o renderizar
     if (GOOGLE_SCRIPT_URL) {
-        syncDatabaseFromSheets();
+        try {
+            await syncDatabaseFromSheets();
+        } catch (e) {
+            console.warn("Error prioritario de sincronizacion en inicio:", e);
+        }
     } else {
         showSyncStatus('local', 'Modo Local');
     }
@@ -355,14 +359,16 @@ function initApp() {
     else if (currentMonth >= 9 && currentMonth <= 12) initialTetra = "Septiembre – Diciembre";
     
     const filterSelect = document.getElementById('global-tetra-filter');
-    filterSelect.value = initialTetra;
-    
-    // Listener for Global Tetra Filter
-    filterSelect.addEventListener('change', () => {
-        if (currentRole === 'alumno') renderAlumnoDashboard();
-        else if (currentRole === 'coordinacion') renderCoordinacionDashboard();
-        else if (currentRole === 'maestro') renderMaestroDashboard();
-    });
+    if (filterSelect) {
+        filterSelect.value = initialTetra;
+        
+        // Listener for Global Tetra Filter
+        filterSelect.addEventListener('change', () => {
+            if (currentRole === 'alumno') renderAlumnoDashboard();
+            else if (currentRole === 'coordinacion') renderCoordinacionDashboard();
+            else if (currentRole === 'maestro') renderMaestroDashboard();
+        });
+    }
 
     let savedSession = null;
     try {
@@ -372,7 +378,7 @@ function initApp() {
     }
 
     if (savedSession) {
-        const sessionUser = DB.usuarios.find(u => u.Correo_Electronico === savedSession);
+        const sessionUser = DB.usuarios.find(u => u.Correo_Electronico.toLowerCase() === savedSession.toLowerCase());
         if (sessionUser) {
             login(sessionUser);
             return;
@@ -778,7 +784,7 @@ function renderMaestroDashboard() {
     const myJustifications = [];
     myMappings.forEach(m => {
         const j = DB.justificaciones.find(x => x.ID_Justificante === m.ID_Justificante);
-        if (j && normalizeTetra(j.Periodo_Tetra) === normalizeTetra(activeTetra) && (j.Estado === 'Aprobada' || j.Estado === 'Enterada por Maestro')) {
+        if (j && normalizeTetra(j.Periodo_Tetra) === normalizeTetra(activeTetra) && j.Estado !== 'Rechazada') {
             myJustifications.push({
                 justificacion: j,
                 maestro_mapping: m
@@ -827,16 +833,22 @@ function renderMaestroDashboard() {
         const m = item.maestro_mapping;
         const studentUser = DB.usuarios.find(u => u.ID_Usuario === j.ID_Alumno);
         
-        let statusBadge = `<span class="badge badge-approved">Pendiente Confirmar</span>`;
-        let actionBtn = `<button class="btn btn-success btn-sm" onclick="confirmTeacherReceipt('${m.ID}')">📋 Confirmar recepción</button>`;
+        let statusBadge = '';
+        let actionBtn = '';
         
-        if (m.Estado_Maestro === 'Enterada por Maestro') {
+        if (j.Estado === 'Pendiente') {
+            statusBadge = `<span class="badge badge-pending" style="background: rgba(255, 159, 10, 0.12); color: var(--warning); border: 1px solid rgba(255, 159, 10, 0.2); font-weight: 600;">Pendiente Escolar</span>`;
+            actionBtn = `<span style="color: var(--warning); font-weight: 500; font-size: 0.8rem;">Esperando Aprobación</span>`;
+        } else if (m.Estado_Maestro === 'Enterada por Maestro') {
             statusBadge = `<span class="badge badge-finalized">Confirmada</span>`;
             actionBtn = `<span style="color:var(--success); font-weight:600; font-size:0.82rem;">Confirmado: ${formatDateTimeString(m.Fecha_Justificacion)}</span>`;
+        } else {
+            statusBadge = `<span class="badge badge-approved">Pendiente Confirmar</span>`;
+            actionBtn = `<button class="btn btn-success btn-sm" onclick="confirmTeacherReceipt('${m.ID}')">📋 Confirmar recepción</button>`;
         }
         
         const coordObs = DB.observaciones.filter(o => o.ID_Justificante === j.ID_Justificante && o.Tipo === 'Revision').reverse();
-        const coordComment = coordObs.length > 0 ? coordObs[0].Comentario : 'Aprobado por Coordinación';
+        const coordComment = j.Estado === 'Pendiente' ? 'En espera de revisión por Coordinación Escolar' : (coordObs.length > 0 ? coordObs[0].Comentario : 'Aprobado por Coordinación');
         
         const row = document.createElement('tr');
         row.innerHTML = `
