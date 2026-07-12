@@ -315,6 +315,9 @@ let currentRole = null;
 let activeRequestForReview = null;
 
 function initApp() {
+    const savedTheme = localStorage.getItem('selected-theme') || 'gold';
+    applySelectedTheme(savedTheme);
+    
     loadDatabase();
     
     // Iniciar sincronización si hay URL configurada
@@ -1647,6 +1650,106 @@ window.deleteCoordRequest = function() {
     if (confirm("¿Estás seguro de que deseas eliminar permanentemente esta solicitud de la base de datos general? Esta acción no se puede deshacer y afectará los registros del alumno y docentes.")) {
         window.deleteRequest(reqId);
     }
+};
+
+window.applySelectedTheme = function(themeName) {
+    const root = document.documentElement;
+    localStorage.setItem('selected-theme', themeName);
+    
+    // Reset body background inline styles
+    document.body.style.backgroundImage = '';
+    document.body.style.backgroundColor = '';
+    
+    if (themeName === 'gold') {
+        // Cosmic Gold Dark Theme (Default)
+        root.style.setProperty('--primary', 'hsl(43, 100%, 50%)');
+        root.style.setProperty('--primary-light', 'rgba(255, 184, 0, 0.12)');
+        root.style.setProperty('--primary-dark', 'hsl(38, 100%, 45%)');
+        root.style.setProperty('--btn-text', '#000000');
+        root.style.setProperty('--btn-shadow', 'rgba(255, 184, 0, 0.25)');
+        root.style.setProperty('--bg-main', '#000000');
+        root.style.setProperty('--bg-card', 'rgba(22, 22, 23, 0.65)');
+        root.style.setProperty('--bg-sidebar', 'rgba(18, 18, 19, 0.85)');
+        root.style.setProperty('--border-color', 'rgba(255, 184, 0, 0.08)');
+        root.style.setProperty('--text-main', 'hsl(0, 0%, 96%)');
+        root.style.setProperty('--text-muted', 'hsl(0, 0%, 65%)');
+        
+        document.body.style.setProperty('background-image', 
+            'radial-gradient(circle at 85% 85%, rgba(255, 184, 0, 0.07), transparent 50%), ' +
+            'radial-gradient(circle at 15% 15%, rgba(138, 43, 226, 0.05), transparent 45%), ' +
+            'linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px), ' +
+            'linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px)', 'important');
+            
+    } else if (themeName === 'aurora') {
+        // Neon Aurora Boreal Dark Theme
+        root.style.setProperty('--primary', 'hsl(280, 100%, 65%)');
+        root.style.setProperty('--primary-light', 'rgba(168, 85, 247, 0.15)');
+        root.style.setProperty('--primary-dark', 'hsl(280, 100%, 55%)');
+        root.style.setProperty('--btn-text', '#000000');
+        root.style.setProperty('--btn-shadow', 'rgba(168, 85, 247, 0.25)');
+        root.style.setProperty('--bg-main', '#04020a');
+        root.style.setProperty('--bg-card', 'rgba(15, 12, 25, 0.65)');
+        root.style.setProperty('--bg-sidebar', 'rgba(10, 8, 16, 0.85)');
+        root.style.setProperty('--border-color', 'rgba(168, 85, 247, 0.12)');
+        root.style.setProperty('--text-main', 'hsl(250, 40%, 96%)');
+        root.style.setProperty('--text-muted', 'hsl(250, 20%, 65%)');
+        
+        document.body.style.setProperty('background-image', 
+            'radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.08), transparent 50%), ' +
+            'radial-gradient(circle at 15% 15%, rgba(168, 85, 247, 0.08), transparent 45%), ' +
+            'linear-gradient(rgba(168, 85, 247, 0.015) 1px, transparent 1px), ' +
+            'linear-gradient(90deg, rgba(168, 85, 247, 0.015) 1px, transparent 1px)', 'important');
+            
+    } else if (themeName === 'emerald') {
+        // Emerald Glass Dark Theme
+        root.style.setProperty('--primary', 'hsl(150, 80%, 45%)');
+        root.style.setProperty('--primary-light', 'rgba(16, 185, 129, 0.15)');
+        root.style.setProperty('--primary-dark', 'hsl(150, 80%, 38%)');
+        root.style.setProperty('--btn-text', '#000000');
+        root.style.setProperty('--btn-shadow', 'rgba(16, 185, 129, 0.25)');
+        root.style.setProperty('--bg-main', '#010603');
+        root.style.setProperty('--bg-card', 'rgba(10, 22, 15, 0.65)');
+        root.style.setProperty('--bg-sidebar', 'rgba(6, 16, 10, 0.85)');
+        root.style.setProperty('--border-color', 'rgba(16, 185, 129, 0.12)');
+        root.style.setProperty('--text-main', 'hsl(140, 30%, 96%)');
+        root.style.setProperty('--text-muted', 'hsl(140, 15%, 65%)');
+        
+        document.body.style.setProperty('background-image', 
+            'radial-gradient(circle at 85% 85%, rgba(52, 211, 153, 0.07), transparent 50%), ' +
+            'radial-gradient(circle at 15% 15%, rgba(16, 185, 129, 0.05), transparent 45%), ' +
+            'linear-gradient(rgba(16, 185, 129, 0.012) 1px, transparent 1px), ' +
+            'linear-gradient(90deg, rgba(16, 185, 129, 0.012) 1px, transparent 1px)', 'important');
+            
+    } else if (themeName === 'light') {
+        // Premium Apple Light Mode (Claro)
+        root.style.setProperty('--primary', 'hsl(210, 100%, 50%)');
+        root.style.setProperty('--primary-light', 'rgba(0, 122, 255, 0.1)');
+        root.style.setProperty('--primary-dark', 'hsl(210, 100%, 45%)');
+        root.style.setProperty('--btn-text', '#ffffff');
+        root.style.setProperty('--btn-shadow', 'rgba(0, 122, 255, 0.25)');
+        root.style.setProperty('--bg-main', '#f5f5f7');
+        root.style.setProperty('--bg-card', 'rgba(255, 255, 255, 0.8)');
+        root.style.setProperty('--bg-sidebar', 'rgba(245, 245, 247, 0.9)');
+        root.style.setProperty('--border-color', 'rgba(0, 0, 0, 0.06)');
+        root.style.setProperty('--text-main', '#1d1d1f');
+        root.style.setProperty('--text-muted', '#86868b');
+        
+        document.body.style.setProperty('background-image', 
+            'radial-gradient(circle at 85% 85%, rgba(0, 122, 255, 0.03), transparent 50%), ' +
+            'radial-gradient(circle at 15% 15%, rgba(168, 85, 247, 0.03), transparent 45%), ' +
+            'linear-gradient(rgba(0, 0, 0, 0.01) 1px, transparent 1px), ' +
+            'linear-gradient(90deg, rgba(0, 0, 0, 0.01) 1px, transparent 1px)', 'important');
+    }
+    
+    // Update metric blue backgrounds to align with theme accent
+    const metricBlue = document.querySelectorAll('.metric-icon.blue');
+    metricBlue.forEach(el => {
+        el.style.backgroundColor = (themeName === 'light') ? 'rgba(0, 122, 255, 0.1)' : 'rgba(255, 184, 0, 0.12)';
+        el.style.color = (themeName === 'light') ? 'var(--primary)' : 'var(--primary)';
+    });
+    
+    const selector = document.getElementById('theme-selector');
+    if (selector) selector.value = themeName;
 };
 
 // INITIALIZATION

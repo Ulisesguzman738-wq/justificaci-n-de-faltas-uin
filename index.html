@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Justifaltas - Control de Inasistencias UIN (Mac Version)</title>
-    <link rel="stylesheet" href="style.css?v=1.2.1">
+    <link rel="stylesheet" href="style.css?v=1.2.2">
 </head>
 <body>
 
@@ -118,6 +118,17 @@
                     <p id="welcome-subtitle">Control de justificaciones académicas.</p>
                 </div>
                 <div style="display: flex; align-items: center; gap: 1.25rem;">
+                    <!-- Theme Selector Element -->
+                    <div style="display: flex; align-items: center; background: var(--bg-card); border: 1.5px solid var(--border-color); padding: 0.4rem 1rem; border-radius: 30px; box-shadow: var(--shadow-sm);">
+                        <label for="theme-selector" style="font-weight: 600; font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">🎨 Tema:</label>
+                        <select id="theme-selector" class="form-control" onchange="applySelectedTheme(this.value)" style="border: none; padding: 0 0.5rem; background: transparent; font-weight: 600; font-size: 0.85rem; cursor: pointer; outline: none; color: var(--text-main);">
+                            <option value="gold" style="background-color: #1c1c1e; color: #fff;">🌌 Oro Cósmico (Oscuro)</option>
+                            <option value="aurora" style="background-color: #1c1c1e; color: #fff;">🔮 Aurora Boreal (Oscuro)</option>
+                            <option value="emerald" style="background-color: #1c1c1e; color: #fff;">🟢 Esmeralda Glass (Oscuro)</option>
+                            <option value="light" style="background-color: #ffffff; color: #000;">☀️ Apple Light (Claro)</option>
+                        </select>
+                    </div>
+
                     <div style="display: flex; align-items: center; background: var(--bg-card); border: 1.5px solid var(--border-color); padding: 0.4rem 1rem; border-radius: 30px; box-shadow: var(--shadow-sm);">
                         <label for="global-tetra-filter" style="font-weight: 600; font-size: 0.85rem; color: var(--text-muted);">Periodo (Tetra):</label>
                         <select id="global-tetra-filter" class="form-control" style="border: none; padding: 0 0.5rem; background: transparent; font-weight: 600; font-size: 0.85rem; cursor: pointer; outline: none;">
@@ -464,6 +475,6 @@
         </div>
     </div>
 
-    <script src="app.js?v=1.2.1"></script>
+    <script src="app.js?v=1.2.2"></script>
 </body>
 </html>
