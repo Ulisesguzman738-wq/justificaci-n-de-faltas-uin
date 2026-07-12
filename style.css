@@ -26,7 +26,7 @@
     --bg-card: rgba(22, 22, 23, 0.65);   /* Translucent Apple Dark Card */
     --bg-sidebar: rgba(18, 18, 19, 0.85);/* Translucent Apple Sidebar */
     
-    --border-color: rgba(255, 184, 0, 0.08); /* Elegant Gold-Tinted Border */
+    --border-color: rgba(0, 113, 227, 0.12); /* Elegant Blue-Tinted Border */
     
     --radius-sm: 8px;
     --radius-md: 12px;
@@ -370,10 +370,10 @@ button, input, select, textarea {
     font-size: 1.5rem;
 }
 
-.metric-icon.blue { background: rgba(255, 184, 0, 0.12); color: var(--primary); }
-.metric-icon.green { background: rgba(48, 209, 88, 0.12); color: var(--success); }
-.metric-icon.orange { background: rgba(255, 159, 10, 0.12); color: var(--warning); }
-.metric-icon.red { background: rgba(255, 69, 58, 0.12); color: var(--danger); }
+.metric-icon.blue { background: var(--primary-light); color: var(--primary); }
+.metric-icon.green { background: var(--success-light); color: var(--success); }
+.metric-icon.orange { background: var(--warning-light); color: var(--warning); }
+.metric-icon.red { background: var(--danger-light); color: var(--danger); }
 
 .metric-info {
     display: flex;
@@ -962,9 +962,9 @@ select.form-control[multiple] {
     }
     .sidebar-nav-container .menu-item.active {
         background: var(--primary) !important;
-        color: #000000 !important;
+        color: var(--btn-text) !important;
         border-color: var(--primary) !important;
-        box-shadow: 0 4px 15px rgba(255, 184, 0, 0.3) !important;
+        box-shadow: 0 4px 15px var(--btn-shadow) !important;
     }
     .sidebar-nav-container .logout-btn {
         background: rgba(255, 255, 255, 0.02);
