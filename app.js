@@ -38,6 +38,15 @@ window.closeCustomAlert = function() {
     }
 };
 
+async function hashPassword(password) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashHex;
+}
+
 // Helper para actualizar el indicador visual de sincronización en la barra lateral
 function showSyncStatus(status, text) {
     const dot = document.getElementById('sync-dot');
@@ -1502,7 +1511,7 @@ function formatDateTimeString(isoString) {
     });
 }
 
-document.getElementById('login-form').addEventListener('submit', function(e) {
+document.getElementById('login-form').addEventListener('submit', async function(e) {
     e.preventDefault();
     const email = document.getElementById('login-email').value.trim();
     const password = document.getElementById('login-password').value;
@@ -1514,8 +1523,28 @@ document.getElementById('login-form').addEventListener('submit', function(e) {
     
     const user = DB.usuarios.find(u => u.Correo_Electronico.toLowerCase() === email.toLowerCase());
     
-    if (user && String(user.Contrasena) === String(password)) {
-        login(user);
+    if (user) {
+        const isSha256 = /^[a-fA-F0-9]{64}$/.test(user.Contrasena);
+        let isMatch = false;
+        
+        if (isSha256) {
+            const hashedInput = await hashPassword(password);
+            isMatch = (user.Contrasena === hashedInput);
+        } else {
+            isMatch = (String(user.Contrasena) === String(password));
+            if (isMatch) {
+                console.log("Auto-cifrando contraseña heredada a SHA-256...");
+                const hashedPwd = await hashPassword(password);
+                user.Contrasena = hashedPwd;
+                saveDatabase();
+            }
+        }
+        
+        if (isMatch) {
+            login(user);
+        } else {
+            alert('Credenciales inválidas. Verifica tu correo institucional y contraseña.');
+        }
     } else {
         alert('Credenciales inválidas. Verifica tu correo institucional y contraseña.');
     }
@@ -1538,7 +1567,7 @@ window.toggleLoginMode = function(mode) {
     }
 };
 
-document.getElementById('login-change-pwd-form').addEventListener('submit', function(e) {
+document.getElementById('login-change-pwd-form').addEventListener('submit', async function(e) {
     e.preventDefault();
     const email = document.getElementById('change-email').value.trim();
     const currentPwd = document.getElementById('change-pwd-current').value;
@@ -1557,7 +1586,16 @@ document.getElementById('login-change-pwd-form').addEventListener('submit', func
         return;
     }
     
-    if (String(user.Contrasena) !== String(currentPwd)) {
+    const isSha256 = /^[a-fA-F0-9]{64}$/.test(user.Contrasena);
+    let isCurrentPwdCorrect = false;
+    if (isSha256) {
+        const hashedCurrent = await hashPassword(currentPwd);
+        isCurrentPwdCorrect = (user.Contrasena === hashedCurrent);
+    } else {
+        isCurrentPwdCorrect = (String(user.Contrasena) === String(currentPwd));
+    }
+    
+    if (!isCurrentPwdCorrect) {
         alert('La contraseña actual es incorrecta.');
         return;
     }
@@ -1572,7 +1610,8 @@ document.getElementById('login-change-pwd-form').addEventListener('submit', func
         return;
     }
     
-    user.Contrasena = newPwd;
+    const hashedNew = await hashPassword(newPwd);
+    user.Contrasena = hashedNew;
     saveDatabase();
     alert('Contraseña cambiada exitosamente. Ahora puedes iniciar sesión con tu nueva contraseña.');
     toggleLoginMode('login');
@@ -1587,7 +1626,7 @@ window.closePasswordModal = function() {
     document.getElementById('password-modal').style.display = 'none';
 };
 
-document.getElementById('change-password-form').addEventListener('submit', function(e) {
+document.getElementById('change-password-form').addEventListener('submit', async function(e) {
     e.preventDefault();
     const currentPwd = document.getElementById('pwd-current').value;
     const newPwd = document.getElementById('pwd-new').value;
@@ -1598,7 +1637,16 @@ document.getElementById('change-password-form').addEventListener('submit', funct
         return;
     }
     
-    if (String(currentUser.Contrasena) !== String(currentPwd)) {
+    const isSha256 = /^[a-fA-F0-9]{64}$/.test(currentUser.Contrasena);
+    let isCurrentPwdCorrect = false;
+    if (isSha256) {
+        const hashedCurrent = await hashPassword(currentPwd);
+        isCurrentPwdCorrect = (currentUser.Contrasena === hashedCurrent);
+    } else {
+        isCurrentPwdCorrect = (String(currentUser.Contrasena) === String(currentPwd));
+    }
+    
+    if (!isCurrentPwdCorrect) {
         alert('La contraseña actual es incorrecta.');
         return;
     }
@@ -1613,10 +1661,11 @@ document.getElementById('change-password-form').addEventListener('submit', funct
         return;
     }
     
-    currentUser.Contrasena = newPwd;
+    const hashedNew = await hashPassword(newPwd);
+    currentUser.Contrasena = hashedNew;
     const dbUser = DB.usuarios.find(u => u.ID_Usuario === currentUser.ID_Usuario);
     if (dbUser) {
-        dbUser.Contrasena = newPwd;
+        dbUser.Contrasena = hashedNew;
     }
     
     saveDatabase();
