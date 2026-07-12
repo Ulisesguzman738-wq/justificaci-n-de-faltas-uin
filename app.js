@@ -7,6 +7,11 @@ const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwo-m3rR6vx2y
 
 // Override native window.alert with custom premium HTML modal
 window.alert = function(message) {
+    if (document.activeElement) {
+        try {
+            document.activeElement.blur();
+        } catch(e) {}
+    }
     const modal = document.getElementById('custom-alert-modal');
     const msgEl = document.getElementById('custom-alert-message');
     const iconEl = document.getElementById('custom-alert-icon');
@@ -936,6 +941,11 @@ document.getElementById('form-date').addEventListener('change', handleDateChange
 
 // 9. NEW JUSTIFICATION SUBMISSION (Alumno)
 function showFormAlert(type, message) {
+    if (document.activeElement) {
+        try {
+            document.activeElement.blur();
+        } catch(e) {}
+    }
     const errorDiv = document.getElementById('form-error-message');
     const successDiv = document.getElementById('form-success-message');
     if (!errorDiv || !successDiv) return;
