@@ -107,11 +107,17 @@ function ensureSheetsAndSchemas() {
       if (sheetName === 'Usuarios') {
         const defaultUsers = [
           ['sim_user_epy1yk2', 'Prueba@uin.edu.mx', 'Usuario de Pruebas UIN', 'alumno', '12345', new Date().toISOString(), 1],
-          ['u1', 'ulisega03s24a@uinteramericana.edu.mx', 'Ulise Guzman Alvaro', 'alumno', '12345', new Date().toISOString(), 1],
-          ['u2', 'syanethh03s24a@uinteramericana.edu.mx', 'Sandra Yanet Hernández Hernández', 'alumno', '12345', new Date().toISOString(), 1],
-          ['t1', 'mdavila0311@uinteramericana.edu.mx', 'Miguel Angel Davila Calzada', 'maestro', '12345', new Date().toISOString(), 1],
-          ['t5', 'direccionsc_sd25o@uinteramericana.edu.mx', 'Lic. Sandra Silva', 'coordinacion', '12345', new Date().toISOString(), 1],
-          ['t6', 'escolarsc@universidadinteramericana.edu.mx', 'Escolar Santa Catarina', 'coordinacion', '12345', new Date().toISOString(), 1]
+          ['Uguzman', 'ulisega03s24a@uinteramericana.edu.mx', 'Ulise Guzman Alvaro', 'alumno', '12345', new Date().toISOString(), 1],
+          ['Syanet', 'syanethh03s24a@uinteramericana.edu.mx', 'Sandra Yanet Hernández Hernández', 'alumno', '12345', new Date().toISOString(), 1],
+          ['Ihernandez', 'irenehh03s24a@uinteramericana.edu.mx', 'Irene Hernández Hernández ', 'alumno', '12345', new Date().toISOString(), 1],
+          ['Yulila', 'iyuleidals03s24a@uinteramericana.edu.mx', 'Itzel Yuleida Lila Sanchez ', 'alumno', '12345', new Date().toISOString(), 1],
+          ['Dantonio', 'dantonioie03s24a@uinteramericana.edu.mx', 'Diego Antonio Iracheta Escareño', 'alumno', '12345', new Date().toISOString(), 1],
+          ['Mangel', 'mdavila0311@uinteramericana.edu.mx', 'Miguel Angel Davila Calzada', 'maestro', '12345', new Date().toISOString(), 1],
+          ['Aeloisa', 'ana.hernandez03ea26@uinteramericana.edu.mx', 'Ana Eloisa Hernández Jimenez', 'maestro', '12345', new Date().toISOString(), 1],
+          ['Oalavez', 'oscar.alavez03ea26p@uinteramericana.edu.mx', 'Oscar Alavez Reyes', 'maestro', '12345', new Date().toISOString(), 1],
+          ['Asimon', 'andres.simon03ea26@uinteramericana.edu.mx', 'Andres Simón Treviño', 'maestro', '12345', new Date().toISOString(), 1],
+          ['SanSilva', 'direccionsc_sd25o@uinteramericana.edu.mx', 'Lic. Sandra Silva', 'coordinacion', '12345', new Date().toISOString(), 1],
+          ['EscSanta', 'escolarsc@universidadinteramericana.edu.mx', 'Escolar Santa Catarina', 'coordinacion', '12345', new Date().toISOString(), 1]
         ];
         sheet.getRange(2, 1, defaultUsers.length, expectedHeaders.length).setValues(defaultUsers);
       }
@@ -134,11 +140,17 @@ function ensureSheetsAndSchemas() {
     if (sheetName === 'Usuarios' && sheet.getLastRow() === 1) {
       const defaultUsers = [
         ['sim_user_epy1yk2', 'Prueba@uin.edu.mx', 'Usuario de Pruebas UIN', 'alumno', '12345', new Date().toISOString(), 1],
-        ['u1', 'ulisega03s24a@uinteramericana.edu.mx', 'Ulise Guzman Alvaro', 'alumno', '12345', new Date().toISOString(), 1],
-        ['u2', 'syanethh03s24a@uinteramericana.edu.mx', 'Sandra Yanet Hernández Hernández', 'alumno', '12345', new Date().toISOString(), 1],
-        ['t1', 'mdavila0311@uinteramericana.edu.mx', 'Miguel Angel Davila Calzada', 'maestro', '12345', new Date().toISOString(), 1],
-        ['t5', 'direccionsc_sd25o@uinteramericana.edu.mx', 'Lic. Sandra Silva', 'coordinacion', '12345', new Date().toISOString(), 1],
-        ['t6', 'escolarsc@universidadinteramericana.edu.mx', 'Escolar Santa Catarina', 'coordinacion', '12345', new Date().toISOString(), 1]
+        ['Uguzman', 'ulisega03s24a@uinteramericana.edu.mx', 'Ulise Guzman Alvaro', 'alumno', '12345', new Date().toISOString(), 1],
+        ['Syanet', 'syanethh03s24a@uinteramericana.edu.mx', 'Sandra Yanet Hernández Hernández', 'alumno', '12345', new Date().toISOString(), 1],
+        ['Ihernandez', 'irenehh03s24a@uinteramericana.edu.mx', 'Irene Hernández Hernández ', 'alumno', '12345', new Date().toISOString(), 1],
+        ['Yulila', 'iyuleidals03s24a@uinteramericana.edu.mx', 'Itzel Yuleida Lila Sanchez ', 'alumno', '12345', new Date().toISOString(), 1],
+        ['Dantonio', 'dantonioie03s24a@uinteramericana.edu.mx', 'Diego Antonio Iracheta Escareño', 'alumno', '12345', new Date().toISOString(), 1],
+        ['Mangel', 'mdavila0311@uinteramericana.edu.mx', 'Miguel Angel Davila Calzada', 'maestro', '12345', new Date().toISOString(), 1],
+        ['Aeloisa', 'ana.hernandez03ea26@uinteramericana.edu.mx', 'Ana Eloisa Hernández Jimenez', 'maestro', '12345', new Date().toISOString(), 1],
+        ['Oalavez', 'oscar.alavez03ea26p@uinteramericana.edu.mx', 'Oscar Alavez Reyes', 'maestro', '12345', new Date().toISOString(), 1],
+        ['Asimon', 'andres.simon03ea26@uinteramericana.edu.mx', 'Andres Simón Treviño', 'maestro', '12345', new Date().toISOString(), 1],
+        ['SanSilva', 'direccionsc_sd25o@uinteramericana.edu.mx', 'Lic. Sandra Silva', 'coordinacion', '12345', new Date().toISOString(), 1],
+        ['EscSanta', 'escolarsc@universidadinteramericana.edu.mx', 'Escolar Santa Catarina', 'coordinacion', '12345', new Date().toISOString(), 1]
       ];
       sheet.getRange(2, 1, defaultUsers.length, expectedHeaders.length).setValues(defaultUsers);
     }
