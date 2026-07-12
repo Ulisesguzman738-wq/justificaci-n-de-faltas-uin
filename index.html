@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Justifaltas - Control de Inasistencias UIN (Mac Version)</title>
-    <link rel="stylesheet" href="style.css?v=1.2.9">
+    <link rel="stylesheet" href="style.css?v=1.3.0">
 </head>
 <body>
 
@@ -88,10 +88,11 @@
                 </div>
             </div>
 
-            <!-- SYNC STATUS WIDGET -->
-            <div id="sync-widget" class="sync-widget">
+            <!-- SYNC STATUS WIDGET (Clickable to manual sync) -->
+            <div id="sync-widget" class="sync-widget" onclick="manualSyncDatabase()" style="cursor: pointer;" title="Haz clic para sincronizar datos manualmente con Google Sheets">
                 <span id="sync-dot"></span>
                 <span id="sync-text">Modo Local</span>
+                <span style="font-size: 0.72rem; opacity: 0.7; margin-left: 4px;">🔄</span>
             </div>
 
             <!-- NAVIGATION ITEMS -->
@@ -400,6 +401,61 @@
                 </div>
             </div>
 
+            <!-- ================= GESTION DE USUARIOS VIEW (Coordinación Only) ================= -->
+            <div id="panel-gestion-usuarios" class="view-panel" style="display: none;">
+                <div class="split-viewer">
+                    <!-- Form Card -->
+                    <div class="details-panel" style="max-width: 420px; flex: 1;">
+                        <div class="card">
+                            <div class="card-title">Registrar Nuevo Usuario</div>
+                            <form id="add-user-form">
+                                <div class="form-group">
+                                    <label for="add-user-name">Nombre Completo</label>
+                                    <input type="text" id="add-user-name" class="form-control" placeholder="ej. Ana Eloisa Hernández Jimenez">
+                                </div>
+                                <div class="form-group">
+                                    <label for="add-user-email">Correo Institucional</label>
+                                    <input type="email" id="add-user-email" class="form-control" placeholder="ej. ana.hernandez03ea26@uinteramericana.edu.mx">
+                                </div>
+                                <div class="form-group">
+                                    <label for="add-user-role">Rol del Usuario</label>
+                                    <select id="add-user-role" class="form-control">
+                                        <option value="maestro">Maestro / Docente</option>
+                                        <option value="alumno">Alumno / Estudiante</option>
+                                        <option value="coordinacion">Coordinación Escolar</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="add-user-pwd">Contraseña Temporal</label>
+                                    <input type="text" id="add-user-pwd" class="form-control" placeholder="Por defecto: 12345" value="12345">
+                                </div>
+                                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Registrar Usuario</button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Users Table Card -->
+                    <div class="card" style="flex: 1; display: flex; flex-direction: column;">
+                        <div class="card-title">Directorio de Usuarios y Docentes</div>
+                        <div class="table-responsive" style="flex: 1; max-height: 480px; overflow-y: auto;">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Correo</th>
+                                        <th>Rol</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="management-users-table">
+                                    <!-- Dynamic list of users -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- ================= MAESTRO VIEW ================= -->
             <div id="panel-maestro" class="view-panel">
                 <!-- Notifications -->
@@ -495,6 +551,6 @@
         </div>
     </div>
 
-    <script src="app.js?v=1.2.9"></script>
+    <script src="app.js?v=1.3.0"></script>
 </body>
 </html>

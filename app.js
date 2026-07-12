@@ -262,6 +262,18 @@ async function syncDatabaseFromSheets() {
     }
 }
 
+window.manualSyncDatabase = function() {
+    if (GOOGLE_SCRIPT_URL) {
+        syncDatabaseFromSheets().then(() => {
+            alert("Sincronización con Google Sheets completada de forma exitosa.");
+        }).catch(() => {
+            alert("No se pudo conectar con Google Sheets. Se mantendrán los datos locales temporales.");
+        });
+    } else {
+        alert("El portal está configurado en Modo Local sin URL de Google Sheets conectada.");
+    }
+};
+
 function saveDatabase() {
     try {
         localStorage.setItem(DB_KEY, JSON.stringify(DB));
@@ -450,6 +462,10 @@ function switchTab(tabId) {
             item.classList.remove('active');
         }
     });
+    
+    if (tabId === 'panel-gestion-usuarios') {
+        renderManagementUsers();
+    }
 }
 
 function setupSidebarMenu() {
@@ -463,6 +479,7 @@ function setupSidebarMenu() {
     } else if (currentRole === 'coordinacion') {
         menuList.innerHTML = `
             <li><a class="menu-item active" data-target="panel-coordinacion" onclick="switchTab('panel-coordinacion')">⚖️ Revisar Solicitudes</a></li>
+            <li><a class="menu-item" data-target="panel-gestion-usuarios" onclick="switchTab('panel-gestion-usuarios')">👥 Gestión de Usuarios</a></li>
         `;
     } else if (currentRole === 'maestro') {
         menuList.innerHTML = `
@@ -1874,6 +1891,101 @@ function autoLogout() {
 // Bind user activity events to keep session alive
 ['click', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(eventName => {
     document.addEventListener(eventName, resetInactivityTimer, { passive: true });
+});
+
+// ================= USER DIRECTORY MANAGEMENT (Coordinación Only) =================
+window.renderManagementUsers = function() {
+    const tableBody = document.getElementById('management-users-table');
+    if (!tableBody) return;
+    tableBody.innerHTML = '';
+    
+    // Sort users: coordinators first, then teachers, then students
+    const sortedUsers = [...DB.usuarios].sort((a, b) => {
+        if (a.Rol !== b.Rol) return a.Rol.localeCompare(b.Rol);
+        return a.Nombre_Completo.localeCompare(b.Nombre_Completo);
+    });
+    
+    sortedUsers.forEach(u => {
+        const row = document.createElement('tr');
+        
+        let roleBadge = '';
+        const role = getNormalizedRole(u.Rol);
+        if (role === 'coordinacion') {
+            roleBadge = `<span class="badge badge-pending" style="background: rgba(255, 159, 10, 0.12); color: var(--warning);">Coordinador</span>`;
+        } else if (role === 'maestro') {
+            roleBadge = `<span class="badge badge-approved" style="background: var(--primary-light); color: var(--primary);">Docente</span>`;
+        } else {
+            roleBadge = `<span class="badge badge-approved" style="background: rgba(48, 209, 88, 0.12); color: var(--success);">Alumno</span>`;
+        }
+        
+        const isSelf = currentUser && currentUser.ID_Usuario === u.ID_Usuario;
+        const deleteBtn = isSelf 
+            ? `<span style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;">Sesión Activa</span>`
+            : `<button class="btn btn-danger" style="padding: 0.3rem 0.75rem; font-size: 0.75rem;" onclick="deleteUserRecord('${u.ID_Usuario}')">Eliminar</button>`;
+            
+        row.innerHTML = `
+            <td data-label="Nombre"><strong>${u.Nombre_Completo}</strong></td>
+            <td data-label="Correo"><small>${u.Correo_Electronico}</small></td>
+            <td data-label="Rol">${roleBadge}</td>
+            <td data-label="Acciones">${deleteBtn}</td>
+        `;
+        tableBody.appendChild(row);
+    });
+};
+
+window.deleteUserRecord = function(userId) {
+    if (confirm("¿Estás seguro de que deseas eliminar permanentemente a este usuario de la base de datos de la universidad?")) {
+        DB.usuarios = DB.usuarios.filter(u => u.ID_Usuario !== userId);
+        saveDatabase();
+        renderManagementUsers();
+        alert("El usuario ha sido eliminado exitosamente de la base de datos.");
+    }
+};
+
+document.getElementById('add-user-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const name = document.getElementById('add-user-name').value.trim();
+    const email = document.getElementById('add-user-email').value.trim();
+    const role = document.getElementById('add-user-role').value;
+    const pwd = document.getElementById('add-user-pwd').value.trim() || '12345';
+    
+    if (!name || !email) {
+        alert("Por favor, completa el nombre y el correo institucional.");
+        return;
+    }
+    
+    if (!email.endsWith('@uinteramericana.edu.mx') && !email.endsWith('@universidadinteramericana.edu.mx')) {
+        alert("El correo electrónico debe ser una cuenta institucional de la Universidad Interamericana (@uinteramericana.edu.mx o @universidadinteramericana.edu.mx).");
+        return;
+    }
+    
+    const exists = DB.usuarios.some(u => u.Correo_Electronico.toLowerCase() === email.toLowerCase());
+    if (exists) {
+        alert("Error: Este correo institucional ya se encuentra registrado.");
+        return;
+    }
+    
+    const hashedPwd = await hashPassword(pwd);
+    
+    const newUser = {
+        ID_Usuario: 'usr_' + Math.random().toString(36).substr(2, 9),
+        Correo_Electronico: email,
+        Nombre_Completo: name,
+        Rol: role === 'coordinacion' ? 'coordinacion' : (role === 'maestro' ? 'maestro' : 'alumno'),
+        Contrasena: hashedPwd,
+        Fecha_Registro: new Date().toISOString(),
+        Activo: 1
+    };
+    
+    DB.usuarios.push(newUser);
+    saveDatabase();
+    
+    // Reset Form
+    document.getElementById('add-user-form').reset();
+    document.getElementById('add-user-pwd').value = '12345';
+    
+    renderManagementUsers();
+    alert(`Usuario registrado exitosamente en la base de datos.\nNombre: ${name}\nRol: ${newUser.Rol.toUpperCase()}`);
 });
 
 // INITIALIZATION
