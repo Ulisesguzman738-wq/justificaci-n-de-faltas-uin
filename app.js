@@ -1084,6 +1084,24 @@ function showFormAlert(type, message) {
     }
 }
 
+function setSubmitButtonLoading(isLoading) {
+    const submitBtn = document.getElementById('form-submit-btn');
+    if (!submitBtn) return;
+    if (isLoading) {
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.5';
+        submitBtn.style.cursor = 'not-allowed';
+        submitBtn.setAttribute('data-original-text', submitBtn.innerText);
+        submitBtn.innerText = 'Enviando solicitud...';
+    } else {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+        submitBtn.style.cursor = 'pointer';
+        const origText = submitBtn.getAttribute('data-original-text') || 'Enviar Solicitud';
+        submitBtn.innerText = origText;
+    }
+}
+
 // 9. NEW JUSTIFICATION SUBMISSION (Alumno)
 document.getElementById('new-justification-form').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -1173,9 +1191,13 @@ document.getElementById('new-justification-form').addEventListener('submit', fun
             return;
         }
         
+        // Disable submit button during upload process to prevent double submission
+        setSubmitButtonLoading(true);
+        
         const reader = new FileReader();
         reader.onerror = function() {
             showFormAlert('error', 'Error al leer el archivo de evidencia física.');
+            setSubmitButtonLoading(false);
         };
         reader.onload = async function(event) {
             try {
@@ -1275,6 +1297,9 @@ document.getElementById('new-justification-form').addEventListener('submit', fun
             } catch (innerError) {
                 showFormAlert('error', 'Error interno al procesar el envío: ' + innerError.message);
                 console.error(innerError);
+            } finally {
+                // Re-enable button after process completion
+                setSubmitButtonLoading(false);
             }
         };
         
@@ -1282,6 +1307,7 @@ document.getElementById('new-justification-form').addEventListener('submit', fun
     } catch (error) {
         showFormAlert('error', 'Error al iniciar el envío: ' + error.message);
         console.error(error);
+        setSubmitButtonLoading(false);
     }
 });
 
