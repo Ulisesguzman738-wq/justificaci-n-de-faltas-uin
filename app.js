@@ -5,6 +5,34 @@
 // Si está vacía, el sistema operará en "Modo Local" (usando localStorage).
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwo-m3rR6vx2yQVuEcbKbIM_tooOW5uGD2ffrMdYMoNNCDfEvSd8njEGLU98FDkbVU0/exec";
 
+// Override native window.alert with custom premium HTML modal
+window.alert = function(message) {
+    const modal = document.getElementById('custom-alert-modal');
+    const msgEl = document.getElementById('custom-alert-message');
+    const iconEl = document.getElementById('custom-alert-icon');
+    if (!modal || !msgEl) {
+        console.warn("Custom alert modal not found. Falling back to console:", message);
+        return;
+    }
+    
+    // Auto-detect warning vs success based on message content
+    if (message.toLowerCase().includes('éxito') || message.toLowerCase().includes('correctamente') || message.toLowerCase().includes('exitosamente') || message.toLowerCase().includes('aprobada') || message.toLowerCase().includes('aprobado') || message.toLowerCase().includes('confirmada')) {
+        iconEl.innerText = '✔️';
+    } else {
+        iconEl.innerText = '⚠️';
+    }
+    
+    msgEl.innerText = message;
+    modal.style.display = 'flex';
+};
+
+window.closeCustomAlert = function() {
+    const modal = document.getElementById('custom-alert-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+};
+
 // Helper para actualizar el indicador visual de sincronización en la barra lateral
 function showSyncStatus(status, text) {
     const dot = document.getElementById('sync-dot');
@@ -71,9 +99,9 @@ const officialDB = {
         { ID_Usuario: 'u4', Correo_Electronico: 'iyuleidals03s24a@uinteramericana.edu.mx', Nombre_Completo: 'Itzel Yuleida Lila Sanchez', Rol: 'alumno', Contrasena: '12345', Fecha_Registro: null, Activo: 1 },
         { ID_Usuario: 'u5', Correo_Electronico: 'dantonioie03s24a@uinteramericana.edu.mx', Nombre_Completo: 'Diego Antonio Iracheta Escareño', Rol: 'alumno', Contrasena: '12345', Fecha_Registro: null, Activo: 1 },
         { ID_Usuario: 't1', Correo_Electronico: 'mdavila0311@uinteramericana.edu.mx', Nombre_Completo: 'Miguel Angel Davila Calzada', Rol: 'maestro', Contrasena: '12345', Fecha_Registro: '2026-05-01T00:00:00Z', Activo: 1 },
-        { ID_Usuario: 't2', Correo_Electronico: 'ana.hernandez03ea26@uinteramericana.edu.mx', Nombre_Completo: 'Oscar Alavez Reyes', Rol: 'maestro', Contrasena: '12345', Fecha_Registro: '2026-05-01T00:00:00Z', Activo: 1 },
-        { ID_Usuario: 't3', Correo_Electronico: 'oscar.alavez03ea26p@uinteramericana.edu.mx', Nombre_Completo: 'Andres Simón Treviño', Rol: 'maestro', Contrasena: '12345', Fecha_Registro: null, Activo: 1 },
-        { ID_Usuario: 't4', Correo_Electronico: 'andres.simon03ea26@uinteramericana.edu.mx', Nombre_Completo: 'Ana Eloisa Hernández Jimenez', Rol: 'maestro', Contrasena: '12345', Fecha_Registro: null, Activo: 1 },
+        { ID_Usuario: 't2', Correo_Electronico: 'ana.hernandez03ea26@uinteramericana.edu.mx', Nombre_Completo: 'Ana Eloisa Hernández Jimenez', Rol: 'maestro', Contrasena: '12345', Fecha_Registro: '2026-05-01T00:00:00Z', Activo: 1 },
+        { ID_Usuario: 't3', Correo_Electronico: 'oscar.alavez03ea26p@uinteramericana.edu.mx', Nombre_Completo: 'Oscar Alavez Reyes', Rol: 'maestro', Contrasena: '12345', Fecha_Registro: null, Activo: 1 },
+        { ID_Usuario: 't4', Correo_Electronico: 'andres.simon03ea26@uinteramericana.edu.mx', Nombre_Completo: 'Andres Simón Treviño', Rol: 'maestro', Contrasena: '12345', Fecha_Registro: null, Activo: 1 },
         { ID_Usuario: 't5', Correo_Electronico: 'direccionsc_sd25o@uinteramericana.edu.mx', Nombre_Completo: 'Lic. Sandra Silva', Rol: 'coordinacion', Contrasena: '12345', Fecha_Registro: null, Activo: 1 },
         { ID_Usuario: 't6', Correo_Electronico: 'escolarsc@universidadinteramericana.edu.mx', Nombre_Completo: 'Escolar Santa Catarina', Rol: 'coordinacion', Contrasena: '12345', Fecha_Registro: null, Activo: 1 }
     ],
@@ -1148,6 +1176,11 @@ document.getElementById('btn-approve-request').addEventListener('click', functio
     const comments = document.getElementById('coord-comments').value.trim();
     const assignedParcial = document.getElementById('review-parcial-select').value;
     
+    if (!assignedParcial) {
+        alert('Error: Por favor, selecciona un parcial para la justificación.');
+        return;
+    }
+    
     req.Estado = 'Aprobada';
     req.Parcial = assignedParcial;
     req.ID_Coordinador_Revisor = currentUser.ID_Usuario;
@@ -1384,6 +1417,11 @@ document.getElementById('login-form').addEventListener('submit', function(e) {
     const email = document.getElementById('login-email').value.trim();
     const password = document.getElementById('login-password').value;
     
+    if (!email || !password) {
+        alert('Por favor, ingresa tu correo y contraseña.');
+        return;
+    }
+    
     const user = DB.usuarios.find(u => u.Correo_Electronico.toLowerCase() === email.toLowerCase());
     
     if (user && String(user.Contrasena) === String(password)) {
@@ -1416,6 +1454,11 @@ document.getElementById('login-change-pwd-form').addEventListener('submit', func
     const currentPwd = document.getElementById('change-pwd-current').value;
     const newPwd = document.getElementById('change-pwd-new').value;
     const confirmPwd = document.getElementById('change-pwd-confirm').value;
+    
+    if (!email || !currentPwd || !newPwd || !confirmPwd) {
+        alert('Por favor, completa todos los campos.');
+        return;
+    }
     
     const user = DB.usuarios.find(u => u.Correo_Electronico.toLowerCase() === email.toLowerCase());
     
@@ -1459,6 +1502,11 @@ document.getElementById('change-password-form').addEventListener('submit', funct
     const currentPwd = document.getElementById('pwd-current').value;
     const newPwd = document.getElementById('pwd-new').value;
     const confirmPwd = document.getElementById('pwd-confirm').value;
+    
+    if (!currentPwd || !newPwd || !confirmPwd) {
+        alert('Por favor, completa todos los campos obligatorios.');
+        return;
+    }
     
     if (String(currentUser.Contrasena) !== String(currentPwd)) {
         alert('La contraseña actual es incorrecta.');
