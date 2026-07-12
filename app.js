@@ -1047,6 +1047,18 @@ document.getElementById('form-date').addEventListener('keydown', function(e) {
 document.getElementById('form-calculated-tetra').addEventListener('change', validateMultipleDates);
 document.getElementById('form-calculated-parcial').addEventListener('change', validateMultipleDates);
 
+// Bind reason dropdown changes to toggle manual custom reason field
+document.getElementById('form-reason').addEventListener('change', function() {
+    const otherContainer = document.getElementById('form-reason-other-container');
+    if (this.value === 'Otro') {
+        otherContainer.style.display = 'block';
+        document.getElementById('form-reason-other').focus();
+    } else {
+        otherContainer.style.display = 'none';
+        document.getElementById('form-reason-other').value = '';
+    }
+});
+
 // 9. NEW JUSTIFICATION SUBMISSION (Alumno)
 function showFormAlert(type, message) {
     if (document.activeElement) {
@@ -1090,12 +1102,21 @@ document.getElementById('new-justification-form').addEventListener('submit', fun
         }
         
         const date = selectedDates.join(', ');
-        const reason = document.getElementById('form-reason').value;
+        let reason = document.getElementById('form-reason').value;
         const desc = document.getElementById('form-description').value;
         
         if (!reason) {
             showFormAlert('error', 'Por favor, selecciona un motivo de la lista.');
             return;
+        }
+        
+        if (reason === 'Otro') {
+            const customReason = document.getElementById('form-reason-other').value.trim();
+            if (!customReason) {
+                showFormAlert('error', 'Por favor, escribe el motivo personalizado de tu falta.');
+                return;
+            }
+            reason = customReason;
         }
         
         if (!desc.trim()) {
