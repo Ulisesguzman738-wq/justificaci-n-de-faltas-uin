@@ -565,7 +565,7 @@ function renderAlumnoDashboard() {
         row.innerHTML = `
             <td data-label="ID"><small style="color:var(--text-muted); font-family:monospace;">${j.ID_Justificante}</small></td>
             <td data-label="Fecha Falta"><strong>${formatDateString(j.Fecha_Falta)}</strong></td>
-            <td data-label="Parcial"><span class="badge badge-approved" style="background:#f3f4f6; color:var(--text-main);">${j.Parcial || 'Sin Asignar'}</span></td>
+            <td data-label="Parcial"><span class="badge badge-approved" style="background: var(--primary-light); color: var(--primary); border: 1px solid var(--border-color); font-weight: 600;">${j.Parcial || 'Sin Asignar'}</span></td>
             <td data-label="Motivo">${j.Motivo}</td>
             <td data-label="Docentes Asignados">
                 ${teachersStatusHTML}
@@ -803,7 +803,7 @@ function renderMaestroDashboard() {
             <td data-label="Alumno"><strong>${studentUser ? studentUser.Nombre_Completo : 'Alumno'}</strong></td>
             <td data-label="Correo"><small>${studentUser ? studentUser.Correo_Electronico : 'N/A'}</small></td>
             <td data-label="Fecha Falta"><strong>${formatDateString(j.Fecha_Falta)}</strong></td>
-            <td data-label="Parcial"><span class="badge badge-approved" style="background:#f3f4f6; color:var(--text-main);">${j.Parcial}</span></td>
+            <td data-label="Parcial"><span class="badge badge-approved" style="background: var(--primary-light); color: var(--primary); border: 1px solid var(--border-color); font-weight: 600;">${j.Parcial}</span></td>
             <td data-label="Obs. Coordinación" style="font-size: 0.85rem; font-style: italic; color: var(--primary);">
                 "${coordComment}"
             </td>
