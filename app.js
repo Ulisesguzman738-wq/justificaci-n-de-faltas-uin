@@ -374,6 +374,8 @@ function login(user) {
     currentUser = user;
     currentRole = getNormalizedRole(user.Rol);
     
+    resetInactivityTimer();
+    
     try {
         localStorage.setItem('justifaltas_session_secured', user.Correo_Electronico);
     } catch (e) {
@@ -403,6 +405,13 @@ function login(user) {
 function logout() {
     currentUser = null;
     currentRole = null;
+    
+    // Clear inactivity timer
+    if (inactivityTimer) {
+        clearTimeout(inactivityTimer);
+        inactivityTimer = null;
+    }
+    
     try {
         localStorage.removeItem('justifaltas_session_secured');
     } catch (e) {
@@ -682,6 +691,11 @@ function selectRequestForReview(reqId) {
     
     const parcialSelect = document.getElementById('review-parcial-select');
     parcialSelect.value = req.Parcial || getTetraAndParcial(req.Fecha_Falta).parcial || 'Parcial 1';
+    
+    const tetraSelect = document.getElementById('review-tetra-select');
+    if (tetraSelect) {
+        tetraSelect.value = req.Periodo_Tetra || getTetraAndParcial(req.Fecha_Falta).tetra || 'Mayo – Agosto';
+    }
     
     const container = document.getElementById('evidence-viewer-container');
     container.innerHTML = '';
@@ -1274,6 +1288,12 @@ document.getElementById('btn-approve-request').addEventListener('click', functio
     
     const comments = document.getElementById('coord-comments').value.trim();
     const assignedParcial = document.getElementById('review-parcial-select').value;
+    const assignedTetra = document.getElementById('review-tetra-select').value;
+    
+    if (!assignedTetra) {
+        alert('Error: Por favor, selecciona un periodo (tetra) para la justificación.');
+        return;
+    }
     
     if (!assignedParcial) {
         alert('Error: Por favor, selecciona un parcial para la justificación.');
@@ -1281,6 +1301,7 @@ document.getElementById('btn-approve-request').addEventListener('click', functio
     }
     
     req.Estado = 'Aprobada';
+    req.Periodo_Tetra = assignedTetra;
     req.Parcial = assignedParcial;
     req.ID_Coordinador_Revisor = currentUser.ID_Usuario;
     req.Fecha_Revision = new Date().toISOString();
@@ -1828,6 +1849,32 @@ window.applySelectedTheme = function(themeName) {
     const selector = document.getElementById('theme-selector');
     if (selector) selector.value = themeName;
 };
+
+// Inactivity Session Timeout Manager (5 Minutes)
+let inactivityTimer = null;
+const INACTIVITY_TIMEOUT = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+window.resetInactivityTimer = function() {
+    if (inactivityTimer) {
+        clearTimeout(inactivityTimer);
+    }
+    // Only arm timer if a user is logged in
+    if (currentUser) {
+        inactivityTimer = setTimeout(autoLogout, INACTIVITY_TIMEOUT);
+    }
+};
+
+function autoLogout() {
+    if (currentUser) {
+        logout();
+        alert("Tu sesión ha expirado por inactividad de 5 minutos por seguridad.");
+    }
+}
+
+// Bind user activity events to keep session alive
+['click', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(eventName => {
+    document.addEventListener(eventName, resetInactivityTimer, { passive: true });
+});
 
 // INITIALIZATION
 window.onload = initApp;
