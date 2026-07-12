@@ -3,7 +3,7 @@
 // Google Sheets Integration Configuration
 // Coloca aquí la URL de la Web App obtenida al implementar tu Google Apps Script.
 // Si está vacía, el sistema operará en "Modo Local" (usando localStorage).
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwo-m3rR6vx2yQVuEcbKbIM_tooOW5uGD2ffrMdYMoNNCDfEvSd8njEGLU98FDkbVU0/exec";
+const GOOGLE_SCRIPT_URL = "";
 
 // Helper para actualizar el indicador visual de sincronización en la barra lateral
 function showSyncStatus(status, text) {
@@ -1386,7 +1386,7 @@ document.getElementById('login-form').addEventListener('submit', function(e) {
     
     const user = DB.usuarios.find(u => u.Correo_Electronico.toLowerCase() === email.toLowerCase());
     
-    if (user && user.Contrasena === password) {
+    if (user && String(user.Contrasena) === String(password)) {
         login(user);
     } else {
         alert('Credenciales inválidas. Verifica tu correo institucional y contraseña.');
@@ -1424,7 +1424,7 @@ document.getElementById('login-change-pwd-form').addEventListener('submit', func
         return;
     }
     
-    if (user.Contrasena !== currentPwd) {
+    if (String(user.Contrasena) !== String(currentPwd)) {
         alert('La contraseña actual es incorrecta.');
         return;
     }
@@ -1460,7 +1460,7 @@ document.getElementById('change-password-form').addEventListener('submit', funct
     const newPwd = document.getElementById('pwd-new').value;
     const confirmPwd = document.getElementById('pwd-confirm').value;
     
-    if (currentUser.Contrasena !== currentPwd) {
+    if (String(currentUser.Contrasena) !== String(currentPwd)) {
         alert('La contraseña actual es incorrecta.');
         return;
     }
