@@ -288,7 +288,8 @@ function saveDatabase() {
             method: 'POST',
             body: JSON.stringify({
                 action: 'save_db',
-                data: DB
+                data: DB,
+                callerRole: currentUser ? getNormalizedRole(currentUser.Rol) : 'guest'
             }),
             headers: {
                 'Content-Type': 'text/plain'

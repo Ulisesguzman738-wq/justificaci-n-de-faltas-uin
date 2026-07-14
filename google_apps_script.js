@@ -74,7 +74,7 @@ function doPost(e) {
         
     } else if (action === 'save_db') {
       ensureSheetsAndSchemas();
-      saveAllData(payload.data);
+      saveAllData(payload.data, payload.callerRole);
       return ContentService.createTextOutput(JSON.stringify({ success: true }))
         .setMimeType(ContentService.MimeType.JSON);
         
@@ -254,8 +254,9 @@ function readAllData() {
 /**
  * Sobrescribe las hojas con los nuevos datos guardados por la aplicación.
  */
-function saveAllData(db) {
+function saveAllData(db, callerRole) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
+  callerRole = callerRole || 'guest';
   
   const sheetMapping = {
     'usuarios': 'Usuarios',
@@ -266,6 +267,15 @@ function saveAllData(db) {
     'notificaciones': 'Notificaciones'
   };
   
+  const primaryKeys = {
+    'Usuarios': 'ID_Usuario',
+    'Justificantes': 'ID_Justificante',
+    'Archivos Adjuntos': 'ID_Archivo',
+    'Justificante_Maestro': 'ID',
+    'Observaciones': 'ID_Observacion',
+    'Notificaciones': 'ID_Notificacion'
+  };
+  
   for (let apiKey in sheetMapping) {
     const sheetName = sheetMapping[apiKey];
     let sheet = ss.getSheetByName(sheetName);
@@ -274,29 +284,103 @@ function saveAllData(db) {
       sheet = ss.insertSheet(sheetName);
     }
     
-    sheet.clear();
+    const expectedHeaders = SCHEMAS[sheetName];
+    const pkName = primaryKeys[sheetName];
     
-    const headers = SCHEMAS[sheetName];
-    sheet.appendRow(headers);
-    
-    const items = db[apiKey] || [];
-    if (items.length === 0) continue;
-    
-    const values = [];
-    for (let item of items) {
-      const row = [];
-      for (let header of headers) {
-        let val = item[header];
-        if (val === undefined || val === null) {
-          row.push('');
-        } else {
-          row.push(val);
-        }
-      }
-      values.push(row);
+    // Garantizar que la hoja esté inicializada con cabeceras correctas
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow(expectedHeaders);
     }
     
-    sheet.getRange(2, 1, values.length, headers.length).setValues(values);
+    const range = sheet.getDataRange();
+    let rows = range.getValues();
+    let headers = rows[0].map(h => h.toString().trim());
+    
+    // Validar cabeceras, si no coinciden inicializar
+    const match = expectedHeaders.every(h => headers.includes(h));
+    if (!match) {
+      sheet.clear();
+      sheet.appendRow(expectedHeaders);
+      rows = [expectedHeaders];
+      headers = expectedHeaders;
+    }
+    
+    const pkIndex = headers.indexOf(pkName);
+    if (pkIndex === -1) {
+      sheet.clear();
+      sheet.appendRow(expectedHeaders);
+      rows = [expectedHeaders];
+      headers = expectedHeaders;
+    }
+    
+    // Mapear filas existentes
+    const existingRows = rows.slice(1);
+    const existingMap = {};
+    existingRows.forEach((row, idx) => {
+      const pkVal = row[headers.indexOf(pkName)];
+      if (pkVal !== undefined && pkVal !== null && pkVal !== '') {
+        existingMap[pkVal.toString()] = { rowIndex: idx + 2, data: row };
+      }
+    });
+    
+    const clientItems = db[apiKey] || [];
+    const clientItemIds = new Set();
+    
+    clientItems.forEach(item => {
+      const pkVal = item[pkName];
+      if (pkVal === undefined || pkVal === null || pkVal === '') return;
+      
+      const pkValStr = pkVal.toString();
+      clientItemIds.add(pkValStr);
+      
+      // Construir fila en orden de cabeceras
+      const rowData = headers.map(header => {
+        let val = item[header];
+        return (val === undefined || val === null) ? '' : val;
+      });
+      
+      if (existingMap[pkValStr]) {
+        // Reglas de negocio para proteger estados críticos frente a sobrescrituras concurrentes:
+        const existingData = existingMap[pkValStr].data;
+        const rowIndex = existingMap[pkValStr].rowIndex;
+        
+        // 1. En Justificantes, no regresar a "Pendiente" si ya está "Aprobada" o "Rechazada"
+        if (sheetName === 'Justificantes') {
+          const stateCol = headers.indexOf('Estado');
+          const existingState = existingData[stateCol];
+          const incomingState = item['Estado'];
+          if ((existingState === 'Aprobada' || existingState === 'Rechazada') && incomingState === 'Pendiente') {
+            rowData[stateCol] = existingState; // Conservar el estado de la hoja
+          }
+        }
+        
+        // 2. En Justificante_Maestro, no regresar a "Pendiente" si ya está "Enterada por Maestro"
+        if (sheetName === 'Justificante_Maestro') {
+          const stateCol = headers.indexOf('Estado_Maestro');
+          const existingState = existingData[stateCol];
+          const incomingState = item['Estado_Maestro'];
+          if (existingState === 'Enterada por Maestro' && incomingState === 'Pendiente') {
+            rowData[stateCol] = existingState;
+          }
+        }
+        
+        // Actualizar fila
+        sheet.getRange(rowIndex, 1, 1, headers.length).setValues([rowData]);
+      } else {
+        // Insertar nueva fila
+        sheet.appendRow(rowData);
+      }
+    });
+    
+    // Procesar eliminaciones de usuarios solo si es guardado por la Coordinación
+    if (sheetName === 'Usuarios' && callerRole === 'coordinacion') {
+      for (let i = existingRows.length - 1; i >= 0; i--) {
+        const pkVal = existingRows[i][headers.indexOf(pkName)];
+        if (pkVal && !clientItemIds.has(pkVal.toString())) {
+          sheet.deleteRow(i + 2);
+        }
+      }
+    }
   }
 }
 
