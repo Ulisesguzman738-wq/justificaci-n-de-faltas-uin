@@ -450,9 +450,12 @@ async function initApp() {
 
     if (savedSession) {
         const sessionUser = DB.usuarios.find(u => u.Correo_Electronico.toLowerCase() === savedSession.toLowerCase());
-        if (sessionUser) {
+        const savedToken = localStorage.getItem('justifaltas_session_token');
+        if (sessionUser && String(sessionUser.Contrasena) === String(savedToken)) {
             login(sessionUser);
             return;
+        } else {
+            logout();
         }
     }
     
@@ -478,6 +481,7 @@ function login(user) {
     
     try {
         localStorage.setItem('justifaltas_session_secured', user.Correo_Electronico);
+        localStorage.setItem('justifaltas_session_token', user.Contrasena);
     } catch (e) {
         inMemorySessionEmail = user.Correo_Electronico;
     }
@@ -514,6 +518,7 @@ function logout() {
     
     try {
         localStorage.removeItem('justifaltas_session_secured');
+        localStorage.removeItem('justifaltas_session_token');
     } catch (e) {
         inMemorySessionEmail = null;
     }
