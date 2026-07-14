@@ -300,6 +300,12 @@ function saveDatabase() {
         .then(resData => {
             if (resData.success) {
                 showSyncStatus('sincronizado', 'Sincronizado con Google Sheets');
+                if (resData.data) {
+                    DB = resData.data;
+                    try {
+                        localStorage.setItem(DB_KEY, JSON.stringify(DB));
+                    } catch(e) {}
+                }
             } else {
                 showSyncStatus('error', 'Error al guardar cambios');
                 console.error("Error saving DB to Sheets:", resData.error);
@@ -386,6 +392,17 @@ async function initApp() {
             return;
         }
     }
+    
+    // Periodic synchronization from Google Sheets in the background every 45 seconds (only when a user is logged in)
+    setInterval(async () => {
+        if (currentUser && GOOGLE_SCRIPT_URL) {
+            try {
+                await syncDatabaseFromSheets();
+            } catch (e) {
+                console.warn("Background sync error:", e);
+            }
+        }
+    }, 45000);
     
     showScreen('login');
 }
@@ -2038,6 +2055,13 @@ window.deleteUserRecord = function(userId) {
             .then(resData => {
                 if (resData.success) {
                     showSyncStatus('sincronizado', 'Sincronizado con Google Sheets');
+                    if (resData.data) {
+                        DB = resData.data;
+                        try {
+                            localStorage.setItem(DB_KEY, JSON.stringify(DB));
+                        } catch(e) {}
+                        renderManagementUsers();
+                    }
                 } else {
                     showSyncStatus('error', 'Error al eliminar usuario');
                 }

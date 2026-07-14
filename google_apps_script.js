@@ -75,13 +75,15 @@ function doPost(e) {
     } else if (action === 'save_db') {
       ensureSheetsAndSchemas();
       saveAllData(payload.data, payload.callerRole, payload.callerId);
-      return ContentService.createTextOutput(JSON.stringify({ success: true }))
+      const data = readAllData();
+      return ContentService.createTextOutput(JSON.stringify({ success: true, data: data }))
         .setMimeType(ContentService.MimeType.JSON);
         
     } else if (action === 'delete_user') {
       ensureSheetsAndSchemas();
       deleteUser(payload.userId);
-      return ContentService.createTextOutput(JSON.stringify({ success: true }))
+      const data = readAllData();
+      return ContentService.createTextOutput(JSON.stringify({ success: true, data: data }))
         .setMimeType(ContentService.MimeType.JSON);
         
     } else {
