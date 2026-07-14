@@ -274,7 +274,58 @@ window.manualSyncDatabase = function() {
     }
 };
 
-function saveDatabase() {
+function mergeServerData(serverDB) {
+    if (!serverDB) return;
+    
+    const mergeArray = (clientArr, serverArr, key, customMergeFn) => {
+        if (!clientArr) clientArr = [];
+        if (!serverArr) return clientArr;
+        
+        const clientMap = new Map(clientArr.map(item => [String(item[key]), item]));
+        
+        serverArr.forEach(serverItem => {
+            const clientItem = clientMap.get(String(serverItem[key]));
+            if (clientItem) {
+                if (customMergeFn) {
+                    customMergeFn(clientItem, serverItem);
+                } else {
+                    Object.assign(clientItem, serverItem);
+                }
+            } else {
+                clientArr.push(serverItem);
+            }
+        });
+        return clientArr;
+    };
+    
+    DB.usuarios = mergeArray(DB.usuarios, serverDB.usuarios, 'ID_Usuario', (clientUser, serverUser) => {
+        if (currentUser && String(currentUser.ID_Usuario) === String(clientUser.ID_Usuario)) {
+            const tempPwd = clientUser.Contrasena;
+            Object.assign(clientUser, serverUser);
+            clientUser.Contrasena = tempPwd;
+        } else {
+            const defaultHash = '5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5';
+            const serverPwd = serverUser.Contrasena;
+            const clientPwd = clientUser.Contrasena;
+            
+            Object.assign(clientUser, serverUser);
+            
+            if (serverPwd && serverPwd !== '' && serverPwd !== defaultHash) {
+                clientUser.Contrasena = serverPwd;
+            } else if (clientPwd && clientPwd !== defaultHash) {
+                clientUser.Contrasena = clientPwd;
+            }
+        }
+    });
+    
+    DB.justificaciones = mergeArray(DB.justificaciones, serverDB.justificaciones, 'ID_Justificante');
+    DB.archivos_adjuntos = mergeArray(DB.archivos_adjuntos, serverDB.archivos_adjuntos, 'ID_Archivo');
+    DB.justificante_maestro = mergeArray(DB.justificante_maestro, serverDB.justificante_maestro, 'ID');
+    DB.observaciones = mergeArray(DB.observaciones, serverDB.observaciones, 'ID_Observacion');
+    DB.notificaciones = mergeArray(DB.notificaciones, serverDB.notificaciones, 'ID_Notificacion');
+}
+
+async function saveDatabase() {
     try {
         localStorage.setItem(DB_KEY, JSON.stringify(DB));
     } catch (e) {
@@ -284,7 +335,17 @@ function saveDatabase() {
     if (GOOGLE_SCRIPT_URL) {
         showSyncStatus('sincronizando', 'Guardando cambios...');
         
-        fetch(GOOGLE_SCRIPT_URL, {
+        try {
+            const response = await fetch(GOOGLE_SCRIPT_URL);
+            const resData = await response.json();
+            if (resData.success && resData.data) {
+                mergeServerData(resData.data);
+            }
+        } catch(err) {
+            console.warn("Failed to fetch latest DB for merge before save, proceeding with local:", err);
+        }
+        
+        return fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
             body: JSON.stringify({
                 action: 'save_db',
@@ -310,10 +371,12 @@ function saveDatabase() {
                 showSyncStatus('error', 'Error al guardar cambios');
                 console.error("Error saving DB to Sheets:", resData.error);
             }
+            return resData;
         })
         .catch(err => {
             showSyncStatus('error', 'Error de red al guardar');
             console.error("Network error saving DB to Sheets:", err);
+            throw err;
         });
     }
 }
@@ -1728,7 +1791,10 @@ document.getElementById('login-change-pwd-form').addEventListener('submit', asyn
     
     const hashedNew = await hashPassword(newPwd);
     user.Contrasena = hashedNew;
-    saveDatabase();
+    const tempUser = currentUser;
+    currentUser = user; // Set temporarily to identify caller for password lock merge
+    await saveDatabase();
+    currentUser = tempUser;
     alert('Contraseña cambiada exitosamente. Ahora puedes iniciar sesión con tu nueva contraseña.');
     toggleLoginMode('login');
 });
@@ -1784,7 +1850,7 @@ document.getElementById('change-password-form').addEventListener('submit', async
         dbUser.Contrasena = hashedNew;
     }
     
-    saveDatabase();
+    await saveDatabase();
     alert('Contraseña cambiada exitosamente.');
     closePasswordModal();
 });
