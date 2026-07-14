@@ -289,7 +289,8 @@ function saveDatabase() {
             body: JSON.stringify({
                 action: 'save_db',
                 data: DB,
-                callerRole: currentUser ? getNormalizedRole(currentUser.Rol) : 'guest'
+                callerRole: currentUser ? getNormalizedRole(currentUser.Rol) : 'guest',
+                callerId: currentUser ? currentUser.ID_Usuario : ''
             }),
             headers: {
                 'Content-Type': 'text/plain'

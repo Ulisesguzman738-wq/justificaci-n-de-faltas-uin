@@ -74,7 +74,7 @@ function doPost(e) {
         
     } else if (action === 'save_db') {
       ensureSheetsAndSchemas();
-      saveAllData(payload.data, payload.callerRole);
+      saveAllData(payload.data, payload.callerRole, payload.callerId);
       return ContentService.createTextOutput(JSON.stringify({ success: true }))
         .setMimeType(ContentService.MimeType.JSON);
         
@@ -260,9 +260,10 @@ function readAllData() {
 /**
  * Sobrescribe las hojas con los nuevos datos guardados por la aplicación.
  */
-function saveAllData(db, callerRole) {
+function saveAllData(db, callerRole, callerId) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   callerRole = callerRole || 'guest';
+  callerId = callerId || '';
   
   const sheetMapping = {
     'usuarios': 'Usuarios',
@@ -367,6 +368,19 @@ function saveAllData(db, callerRole) {
           const incomingState = item['Estado_Maestro'];
           if (existingState === 'Enterada por Maestro' && incomingState === 'Pendiente') {
             rowData[stateCol] = existingState;
+          }
+        }
+        
+        // 3. En Usuarios, solo permitir actualizar la contraseña si es el propio usuario logueado (callerId)
+        // o si la contraseña en la hoja está vacía.
+        if (sheetName === 'Usuarios') {
+          const pwdCol = headers.indexOf('Contrasena');
+          if (pwdCol !== -1) {
+            const existingPwd = existingData[pwdCol];
+            const incomingPwd = item['Contrasena'];
+            if (existingPwd && existingPwd !== '' && item['ID_Usuario'] !== callerId) {
+              rowData[pwdCol] = existingPwd; // Conservar la contraseña de la hoja
+            }
           }
         }
         
