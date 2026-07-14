@@ -2006,7 +2006,46 @@ window.renderManagementUsers = function() {
 window.deleteUserRecord = function(userId) {
     if (confirm("¿Estás seguro de que deseas eliminar permanentemente a este usuario de la base de datos de la universidad?")) {
         DB.usuarios = DB.usuarios.filter(u => u.ID_Usuario !== userId);
-        saveDatabase();
+        
+        // Clean up mappings and notifications from local DB representation as well
+        if (DB.justificante_maestro) {
+            DB.justificante_maestro = DB.justificante_maestro.filter(jm => jm.ID_Maestro !== userId);
+        }
+        if (DB.notificaciones) {
+            DB.notificaciones = DB.notificaciones.filter(n => n.ID_Usuario !== userId);
+        }
+        
+        // Save local changes
+        try {
+            localStorage.setItem(DB_KEY, JSON.stringify(DB));
+        } catch(e) {}
+        
+        // Request explicit deletion to Apps Script
+        if (GOOGLE_SCRIPT_URL) {
+            showSyncStatus('sincronizando', 'Eliminando usuario...');
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'delete_user',
+                    userId: userId
+                }),
+                headers: {
+                    'Content-Type': 'text/plain'
+                }
+            })
+            .then(response => response.json())
+            .then(resData => {
+                if (resData.success) {
+                    showSyncStatus('sincronizado', 'Sincronizado con Google Sheets');
+                } else {
+                    showSyncStatus('error', 'Error al eliminar usuario');
+                }
+            })
+            .catch(err => {
+                showSyncStatus('error', 'Error de red al eliminar');
+            });
+        }
+        
         renderManagementUsers();
         alert("El usuario ha sido eliminado exitosamente de la base de datos.");
     }

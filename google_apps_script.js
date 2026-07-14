@@ -78,6 +78,12 @@ function doPost(e) {
       return ContentService.createTextOutput(JSON.stringify({ success: true }))
         .setMimeType(ContentService.MimeType.JSON);
         
+    } else if (action === 'delete_user') {
+      ensureSheetsAndSchemas();
+      deleteUser(payload.userId);
+      return ContentService.createTextOutput(JSON.stringify({ success: true }))
+        .setMimeType(ContentService.MimeType.JSON);
+        
     } else {
       return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Acción no reconocida: ' + action }))
         .setMimeType(ContentService.MimeType.JSON);
@@ -372,12 +378,60 @@ function saveAllData(db, callerRole) {
       }
     });
     
-    // Procesar eliminaciones de usuarios solo si es guardado por la Coordinación
-    if (sheetName === 'Usuarios' && callerRole === 'coordinacion') {
-      for (let i = existingRows.length - 1; i >= 0; i--) {
-        const pkVal = existingRows[i][headers.indexOf(pkName)];
-        if (pkVal && !clientItemIds.has(pkVal.toString())) {
-          sheet.deleteRow(i + 2);
+  }
+}
+
+/**
+ * Elimina un usuario por su ID de la hoja Usuarios y limpia sus relaciones en otras hojas.
+ */
+function deleteUser(userId) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (!userId) return;
+  
+  // 1. Eliminar de Usuarios
+  const userSheet = ss.getSheetByName('Usuarios');
+  if (userSheet) {
+    const range = userSheet.getDataRange();
+    const rows = range.getValues();
+    const headers = rows[0].map(h => h.toString().trim());
+    const pkIndex = headers.indexOf('ID_Usuario');
+    if (pkIndex !== -1) {
+      for (let i = rows.length - 1; i >= 1; i--) {
+        if (rows[i][pkIndex].toString() === userId.toString()) {
+          userSheet.deleteRow(i + 1);
+          break;
+        }
+      }
+    }
+  }
+  
+  // 2. Eliminar de Justificante_Maestro (limpiar relaciones con docente)
+  const mappingSheet = ss.getSheetByName('Justificante_Maestro');
+  if (mappingSheet) {
+    const range = mappingSheet.getDataRange();
+    const rows = range.getValues();
+    const headers = rows[0].map(h => h.toString().trim());
+    const maestroIndex = headers.indexOf('ID_Maestro');
+    if (maestroIndex !== -1) {
+      for (let i = rows.length - 1; i >= 1; i--) {
+        if (rows[i][maestroIndex].toString() === userId.toString()) {
+          mappingSheet.deleteRow(i + 1);
+        }
+      }
+    }
+  }
+  
+  // 3. Eliminar de Notificaciones (limpiar notificaciones del docente)
+  const notifSheet = ss.getSheetByName('Notificaciones');
+  if (notifSheet) {
+    const range = notifSheet.getDataRange();
+    const rows = range.getValues();
+    const headers = rows[0].map(h => h.toString().trim());
+    const userIndex = headers.indexOf('ID_Usuario');
+    if (userIndex !== -1) {
+      for (let i = rows.length - 1; i >= 1; i--) {
+        if (rows[i][userIndex].toString() === userId.toString()) {
+          notifSheet.deleteRow(i + 1);
         }
       }
     }
