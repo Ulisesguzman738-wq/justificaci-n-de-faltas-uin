@@ -335,15 +335,7 @@ async function saveDatabase() {
     if (GOOGLE_SCRIPT_URL) {
         showSyncStatus('sincronizando', 'Guardando cambios...');
         
-        try {
-            const response = await fetch(GOOGLE_SCRIPT_URL);
-            const resData = await response.json();
-            if (resData.success && resData.data) {
-                mergeServerData(resData.data);
-            }
-        } catch(err) {
-            console.warn("Failed to fetch latest DB for merge before save, proceeding with local:", err);
-        }
+
         
         return fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
