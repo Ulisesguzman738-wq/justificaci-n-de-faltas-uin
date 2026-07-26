@@ -2070,15 +2070,23 @@ window.renderManagementUsers = function() {
         }
         
         const isSelf = currentUser && currentUser.ID_Usuario === u.ID_Usuario;
-        const deleteBtn = isSelf 
-            ? `<span style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;">Sesión Activa</span>`
-            : `<button class="btn btn-danger" style="padding: 0.3rem 0.75rem; font-size: 0.75rem;" onclick="deleteUserRecord('${u.ID_Usuario}')">Eliminar</button>`;
+        let actionsHtml = '';
+        if (isSelf) {
+            actionsHtml = `<span style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;">Sesión Activa</span>`;
+        } else {
+            const isAlumno = role === 'alumno';
+            const resetBtn = isAlumno 
+                ? `<button class="btn btn-secondary btn-sm" style="padding: 0.3rem 0.5rem; font-size: 0.75rem; border-color: var(--primary); color: var(--primary); background: transparent;" onclick="resetUserPassword('${u.ID_Usuario}')">Restablecer</button>`
+                : '';
+            const deleteBtn = `<button class="btn btn-danger btn-sm" style="padding: 0.3rem 0.5rem; font-size: 0.75rem;" onclick="deleteUserRecord('${u.ID_Usuario}')">Eliminar</button>`;
+            actionsHtml = `<div style="display: flex; gap: 0.25rem; align-items: center;">${resetBtn}${deleteBtn}</div>`;
+        }
             
         row.innerHTML = `
             <td data-label="Nombre"><strong>${u.Nombre_Completo}</strong></td>
             <td data-label="Correo"><small>${u.Correo_Electronico}</small></td>
             <td data-label="Rol">${roleBadge}</td>
-            <td data-label="Acciones">${deleteBtn}</td>
+            <td data-label="Acciones">${actionsHtml}</td>
         `;
         tableBody.appendChild(row);
     });
@@ -2184,6 +2192,37 @@ document.getElementById('add-user-form').addEventListener('submit', async functi
     renderManagementUsers();
     alert(`Usuario registrado exitosamente en la base de datos.\nNombre: ${name}\nRol: ${newUser.Rol.toUpperCase()}`);
 });
+
+window.resetUserPassword = async function(userId) {
+    const user = DB.usuarios.find(u => u.ID_Usuario === userId);
+    if (!user) return;
+    
+    if (confirm(`¿Estás seguro de que deseas restablecer la contraseña de ${user.Nombre_Completo} a la predeterminada "12345"?`)) {
+        const hashed = await hashPassword('12345');
+        user.Contrasena = hashed;
+        await saveDatabase();
+        alert(`La contraseña de ${user.Nombre_Completo} ha sido restablecida a "12345".`);
+        renderManagementUsers();
+    }
+};
+
+window.resetAllStudentPasswords = async function() {
+    const students = DB.usuarios.filter(u => getNormalizedRole(u.Rol) === 'alumno');
+    if (students.length === 0) {
+        alert("No hay alumnos registrados en la base de datos.");
+        return;
+    }
+    
+    if (confirm(`¿Estás seguro de que deseas restablecer la contraseña de TODOS los alumnos (${students.length}) a la predeterminada "12345"?`)) {
+        const hashed = await hashPassword('12345');
+        for (const student of students) {
+            student.Contrasena = hashed;
+        }
+        await saveDatabase();
+        alert(`Las contraseñas de todos los alumnos (${students.length}) han sido restablecidas a "12345".`);
+        renderManagementUsers();
+    }
+};
 
 // INITIALIZATION
 window.onload = initApp;

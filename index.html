@@ -441,7 +441,10 @@
                     
                     <!-- Users Table Card -->
                     <div class="card" style="flex: 1; display: flex; flex-direction: column;">
-                        <div class="card-title">Directorio de Usuarios y Docentes</div>
+                        <div class="card-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                            <span>Directorio de Usuarios y Docentes</span>
+                            <button class="btn btn-secondary btn-sm" id="btn-reset-all-students" onclick="resetAllStudentPasswords()" style="background-color: var(--primary-light); color: var(--primary); border: 1px solid var(--primary-light);">Restablecer Alumnos a 12345</button>
+                        </div>
                         <div class="table-responsive" style="flex: 1; max-height: 480px; overflow-y: auto;">
                             <table class="custom-table">
                                 <thead>

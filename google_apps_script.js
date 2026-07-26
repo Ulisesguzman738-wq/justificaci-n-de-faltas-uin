@@ -380,7 +380,7 @@ function saveAllData(db, callerRole, callerId) {
           if (pwdCol !== -1) {
             const existingPwd = existingData[pwdCol];
             const incomingPwd = item['Contrasena'];
-            if (existingPwd && existingPwd !== '' && item['ID_Usuario'] !== callerId) {
+            if (existingPwd && existingPwd !== '' && item['ID_Usuario'] !== callerId && callerRole !== 'coordinacion') {
               rowData[pwdCol] = existingPwd; // Conservar la contraseña de la hoja
             }
           }
